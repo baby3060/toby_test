@@ -7,19 +7,29 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import com.tobexam.common.*;
 
 public class UserDao {
+    private ConnectionBean connBean;
+    
+    public UserDao(ConnectionBean connBean) {
+        this.connBean = connBean;   
+    }
+
     // User Add
     public int add(User user) throws Exception {
         int result = 0;
         Connection conn = null;
         PreparedStatement pstmt = null;
+
+        String connectionStr = String.format("%s%s", this.connBean.getHost(), this.connBean.getDatabaseName());
+
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
+            Class.forName(this.connBean.getClassName());
 
             String sql = "Insert Into USER(id, name, password) Values (?, ?, ?) ";
 
-            conn = DriverManager.getConnection("jdbc:mysql://localhost:3307/toby1", "toby1", "toby1db");
+            conn = DriverManager.getConnection(connectionStr, this.connBean.getUserName(), this.connBean.getUserPass());
 
             pstmt = conn.prepareStatement(sql);
 
@@ -58,12 +68,14 @@ public class UserDao {
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
+        String connectionStr = String.format("%s%s", this.connBean.getHost(), this.connBean.getDatabaseName());
+
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
+            Class.forName(this.connBean.getClassName());
 
             String sql = "Select id, name, password From USER Where id = ? ";
 
-            conn = DriverManager.getConnection("jdbc:mysql://localhost:3307/toby1", "toby1", "toby1db");
+            conn = DriverManager.getConnection(connectionStr, this.connBean.getUserName(), this.connBean.getUserPass());
 
             pstmt = conn.prepareStatement(sql);
 
@@ -107,12 +119,14 @@ public class UserDao {
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
+
+        String connectionStr = String.format("%s%s", this.connBean.getHost(), this.connBean.getDatabaseName());
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
+            Class.forName(this.connBean.getClassName());
 
             String sql = "Select Count(*) As cnt From USER";
 
-            conn = DriverManager.getConnection("jdbc:mysql://localhost:3307/toby1", "toby1", "toby1db");
+            conn = DriverManager.getConnection(connectionStr, this.connBean.getUserName(), this.connBean.getUserPass());
 
             pstmt = conn.prepareStatement(sql);
 
@@ -149,12 +163,15 @@ public class UserDao {
         int result = 0;
         Connection conn = null;
         PreparedStatement pstmt = null;
+
+        String connectionStr = String.format("%s%s", this.connBean.getHost(), this.connBean.getDatabaseName());
+
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
+            Class.forName(this.connBean.getClassName());
 
             String sql = "Delete From USER Where id = ? ";
 
-            conn = DriverManager.getConnection("jdbc:mysql://localhost:3307/toby1", "toby1", "toby1db");
+            conn = DriverManager.getConnection(connectionStr, this.connBean.getUserName(), this.connBean.getUserPass());
 
             pstmt = conn.prepareStatement(sql);
 
@@ -190,12 +207,14 @@ public class UserDao {
         int result = 0;
         Connection conn = null;
         PreparedStatement pstmt = null;
+
+        String connectionStr = String.format("%s%s", this.connBean.getHost(), this.connBean.getDatabaseName());
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
+            Class.forName(this.connBean.getClassName());
 
             String sql = "Delete From USER ";
 
-            conn = DriverManager.getConnection("jdbc:mysql://localhost:3307/toby1", "toby1", "toby1db");
+            conn = DriverManager.getConnection(connectionStr, this.connBean.getUserName(), this.connBean.getUserPass());
 
             pstmt = conn.prepareStatement(sql);
 
@@ -224,5 +243,4 @@ public class UserDao {
 
         return result;
     }
-
 }
