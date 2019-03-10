@@ -8,9 +8,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class UserDao {
-    private SimpleConnectionMaker connectionMaker;
+    private ConnectionMaker connectionMaker;
     
-    public UserDao(SimpleConnectionMaker connectionMaker) {
+    public UserDao(ConnectionMaker connectionMaker) {
         this.connectionMaker = connectionMaker;   
     }
 

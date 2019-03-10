@@ -9,13 +9,14 @@ import java.sql.ResultSet;
 
 import com.tobexam.common.*;
 
-public class SimpleConnectionMaker {
+public class SimpleConnectionMaker implements ConnectionMaker {
     private ConnectionBean connBean;
     
     public SimpleConnectionMaker(ConnectionBean connBean) {
         this.connBean = connBean;   
     }
-    
+
+    @Override
     public Connection getConnection() throws ClassNotFoundException, SQLException {
         Connection conn = null;
 
