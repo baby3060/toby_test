@@ -7,7 +7,12 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-public abstract class UserDao {
+public class UserDao {
+    private SimpleConnectionMaker connectionMaker;
+    
+    public UserDao(SimpleConnectionMaker connectionMaker) {
+        this.connectionMaker = connectionMaker;   
+    }
 
     // User Add
     public int add(User user) throws Exception {
@@ -18,7 +23,7 @@ public abstract class UserDao {
         try {
             String sql = "Insert Into USER(id, name, password) Values (?, ?, ?) ";
 
-            conn = getConnection();
+            conn = connectionMaker.getConnection();
 
             pstmt = conn.prepareStatement(sql);
 
@@ -59,7 +64,7 @@ public abstract class UserDao {
         try {
             String sql = "Select id, name, password From USER Where id = ? ";
 
-            conn = getConnection();
+            conn = connectionMaker.getConnection();
 
             pstmt = conn.prepareStatement(sql);
 
@@ -106,7 +111,7 @@ public abstract class UserDao {
         try {
             String sql = "Select Count(*) As cnt From USER";
 
-            conn = getConnection();
+            conn = connectionMaker.getConnection();
 
             pstmt = conn.prepareStatement(sql);
 
@@ -147,7 +152,7 @@ public abstract class UserDao {
         try {
             String sql = "Delete From USER Where id = ? ";
 
-            conn = getConnection();
+            conn = connectionMaker.getConnection();
 
             pstmt = conn.prepareStatement(sql);
 
@@ -187,7 +192,7 @@ public abstract class UserDao {
         try {
             String sql = "Delete From USER ";
 
-            conn = getConnection();
+            conn = connectionMaker.getConnection();
 
             pstmt = conn.prepareStatement(sql);
 
@@ -217,5 +222,4 @@ public abstract class UserDao {
         return result;
     }
 
-    public abstract Connection getConnection() throws ClassNotFoundException, SQLException;
 }

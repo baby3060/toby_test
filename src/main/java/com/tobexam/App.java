@@ -14,7 +14,9 @@ public class App {
         try {
         	ConnectionBean mysqlConfig1 = parConfig.setConfig("mysql_conn.xml");
 
-            UserDao userDao = new NUserDao(mysqlConfig1);
+            SimpleConnectionMaker connectionMaker = new SimpleConnectionMaker(mysqlConfig1);
+
+            UserDao userDao = new UserDao(connectionMaker);
 
             user = userDao.get("111");
 

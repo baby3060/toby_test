@@ -1,16 +1,21 @@
 package com.tobexam.dao;
 
+import com.tobexam.model.User;
 import java.sql.SQLException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 import com.tobexam.common.*;
 
-public class NUserDao extends UserDao {
+public class SimpleConnectionMaker {
     private ConnectionBean connBean;
     
-    public NUserDao(ConnectionBean connBean) {
+    public SimpleConnectionMaker(ConnectionBean connBean) {
         this.connBean = connBean;   
     }
-    @Override
+    
     public Connection getConnection() throws ClassNotFoundException, SQLException {
         Connection conn = null;
 
