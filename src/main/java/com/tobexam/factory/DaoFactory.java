@@ -12,7 +12,10 @@ public class DaoFactory {
     public UserDao userDao() {
         UserDao dao = null;
 
-        dao = new UserDao(connectionMaker());
+        dao = new UserDao();
+        dao.setConnectionMaker(connectionMaker());
+
+        // dao = new UserDao(connectionMaker());
 
         return dao;
     }
