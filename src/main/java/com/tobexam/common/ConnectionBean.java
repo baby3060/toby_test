@@ -7,7 +7,11 @@ public class ConnectionBean {
     private String userName;
     private String userPass;
 
-    public ConnectionBean(final String className, final String host, final String databaseName, final String userName, final String userPass) {
+    public ConnectionBean() {
+        
+    }
+
+    public ConnectionBean(String className, String host, String databaseName, String userName, String userPass) {
         this.className = className;
         this.host = host;
         this.databaseName = databaseName;
@@ -34,4 +38,25 @@ public class ConnectionBean {
     public String getUserPass() {
         return this.userPass;
     }
+
+    public void setClassName(String className) {
+        this.className = className;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    public void setDatabaseName(String databaseName) {
+        this.databaseName = databaseName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public void setUserPass(String userPass) {
+        this.userPass = userPass;
+    }
+
 }

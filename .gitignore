@@ -1,4 +1,4 @@
 /target/
-/src/*/resources/
+/src/*/resources/*_conn.xml
 .classpath
 .project

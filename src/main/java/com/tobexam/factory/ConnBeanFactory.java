@@ -1,4 +1,4 @@
-package com.tobexam.common;
+package com.tobexam.factory;
 
 import java.io.IOException;
 import java.io.File;
@@ -16,8 +16,16 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
-public class XMLParsingConfig {
-    public ConnectionBean setConfig(String fileName) throws Exception, XPathExpressionException{
+import com.tobexam.common.*;
+
+public class ConnBeanFactory {
+    private String fileName;
+
+    public void setFileName( String fileName ) {
+        this.fileName = fileName;
+    }
+
+    public ConnectionBean makeConnectionBean() throws Exception, XPathExpressionException{
         // 설정 파일 위치 읽어오기
         ConnectionBean bean = null;
 

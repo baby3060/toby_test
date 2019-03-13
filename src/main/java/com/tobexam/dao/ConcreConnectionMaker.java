@@ -11,8 +11,16 @@ import com.tobexam.common.*;
 
 public class ConcreConnectionMaker implements ConnectionMaker {
     private ConnectionBean connBean;
-    
+
+    public ConcreConnectionMaker() {
+        
+    }
+
     public ConcreConnectionMaker(ConnectionBean connBean) {
+        this.connBean = connBean;
+    }
+
+    public void setConnBean(ConnectionBean connBean) {
         this.connBean = connBean;
     }
 
