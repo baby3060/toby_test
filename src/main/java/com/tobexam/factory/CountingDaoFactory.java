@@ -27,11 +27,10 @@ public class CountingDaoFactory {
 
     @Bean
     public ConnectionMaker realConnectionMaker() {
-        XMLParsingConfig parConfig = new XMLParsingConfig();
         ConnectionMaker realConnectionMaker = null;
 
         try {
-            ConnectionBean mysqlConfig1 = makeConnBean("mysql_conn.xml");
+            ConnectionBean mysqlConfig1 = makeConnBean();
 
             realConnectionMaker = new ConcreConnectionMaker(mysqlConfig1);
         } catch(Exception e) {
@@ -41,11 +40,12 @@ public class CountingDaoFactory {
     }
 
     @Bean
-    public ConnectionBean makeConnBean(String fileName) {
+    public ConnectionBean makeConnBean() {
         XMLParsingConfig parConfig = new XMLParsingConfig();
+        parConfig.setFileName("mysql_conn.xml");
         ConnectionBean conConfig = null;
         try {
-            conConfig = parConfig.setConfig(fileName);
+            conConfig = parConfig.setConfig();
         } catch(Exception e) {
             e.printStackTrace();
         }

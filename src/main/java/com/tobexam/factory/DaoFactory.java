@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class DaoFactory {
-    @Bean
     public UserDao userDao() {
         UserDao dao = null;
 
@@ -20,13 +19,12 @@ public class DaoFactory {
         return dao;
     }
 
-    @Bean
     public ConnectionMaker connectionMaker() {
         XMLParsingConfig parConfig = new XMLParsingConfig();
         ConnectionMaker connectionMaker = null;
 
         try {
-            ConnectionBean mysqlConfig1 = makeConnBean("mysql_conn.xml");
+            ConnectionBean mysqlConfig1 = makeConnBean();
 
             connectionMaker = new ConcreConnectionMaker(mysqlConfig1);
         } catch(Exception e) {
@@ -35,12 +33,11 @@ public class DaoFactory {
         return connectionMaker;
     }
 
-    @Bean
-    public ConnectionBean makeConnBean(String fileName) {
+    public ConnectionBean makeConnBean() {
         XMLParsingConfig parConfig = new XMLParsingConfig();
         ConnectionBean conConfig = null;
         try {
-            conConfig = parConfig.setConfig(fileName);
+            conConfig = parConfig.setConfig();
         } catch(Exception e) {
             e.printStackTrace();
         }

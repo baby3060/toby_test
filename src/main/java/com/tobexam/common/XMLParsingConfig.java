@@ -17,7 +17,13 @@ import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 public class XMLParsingConfig {
-    public ConnectionBean setConfig(String fileName) throws Exception, XPathExpressionException{
+    private String fileName;
+    
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+    
+    public ConnectionBean setConfig() throws Exception, XPathExpressionException{
         // 설정 파일 위치 읽어오기
         ConnectionBean bean = null;
 
@@ -28,7 +34,7 @@ public class XMLParsingConfig {
         String userPass = "";
         try {
             ClassLoader classLoader = getClass().getClassLoader();
-	        File file = new File(classLoader.getResource(fileName).getFile());
+	        File file = new File(classLoader.getResource(this.fileName).getFile());
 
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder documentBuilder = factory.newDocumentBuilder();
