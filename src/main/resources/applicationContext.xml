@@ -2,30 +2,24 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
-    <!-- 
-    <bean id="connBeanFactory" class="com.tobexam.factory.ConnBeanFactory">
-        <property name="fileName" value="oracle_conn.xml" />
-    </bean>
-
-
-    <bean id="getConnection" class="com.tobexam.dao.ConcreConnectionMaker">
-        <property name="connBean">
-            <bean factory-bean="connBeanFactory" factory-method="makeConnectionBean" />
-        </property>
-    </bean>
-    -->
 
     <bean id="xmlParsing" class="com.tobexam.common.XMLParsingConfig">
         <property name="fileName" value="mysql_conn.xml" />
     </bean>
 
-    <bean id="getConnection" class="com.tobexam.dao.ConcreConnectionMaker">
-        <property name="connBean">
-            <bean factory-bean="xmlParsing" factory-method="setConfig" />
-        </property>
+    <bean id="connBean" class="com.tobexam.common.ConnectionBean"
+        factory-bean="xmlParsing" factory-method="setConfig"
+    >
+    </bean>
+    
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+        <property name="driverClass" value="#{connBean.getClassName()}" />
+        <property name="url" value="#{connBean.getConnStr()}" />
+        <property name="username" value="#{connBean.getUserName()}" />
+        <property name="password" value="#{connBean.getUserPass()}" />
     </bean>
 
     <bean id="userDao" class="com.tobexam.dao.UserDao">
-        <property name="connectionMaker" ref="getConnection" />
+        <property name="dataSource" ref="dataSource" />
     </bean>
 </beans>

@@ -5,22 +5,26 @@ import com.tobexam.dao.*;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 
-@Configuration
+import javax.sql.DataSource;
+
 public class DaoFactory {
+
     public UserDao userDao() {
         UserDao dao = null;
 
         dao = new UserDao();
-        dao.setConnectionMaker(connectionMaker());
+        // dao.setConnectionMaker(connectionMaker());
 
         // dao = new UserDao(connectionMaker());
+
+        dao.setDataSource(dataSource());
 
         return dao;
     }
 
     public ConnectionMaker connectionMaker() {
-        XMLParsingConfig parConfig = new XMLParsingConfig();
         ConnectionMaker connectionMaker = null;
 
         try {
@@ -35,6 +39,7 @@ public class DaoFactory {
 
     public ConnectionBean makeConnBean() {
         XMLParsingConfig parConfig = new XMLParsingConfig();
+        parConfig.setFileName("mysql_conn.xml");
         ConnectionBean conConfig = null;
         try {
             conConfig = parConfig.setConfig();
@@ -42,6 +47,13 @@ public class DaoFactory {
             e.printStackTrace();
         }
         return conConfig;
+    }
+
+    public DataSource dataSource() {
+        SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
+        
+
+        return dataSource;
     }
 
 }

@@ -19,6 +19,12 @@ public class ConnectionBean {
         this.userPass = userPass;
     }
 
+    public String getConnStr() {
+        String connectionStr = String.format("%s%s", this.host, this.databaseName);
+
+        return connectionStr;
+    }
+
     public String getClassName() {
         return this.className;
     }
@@ -58,5 +64,7 @@ public class ConnectionBean {
     public void setUserPass(String userPass) {
         this.userPass = userPass;
     }
+
+    
 
 }

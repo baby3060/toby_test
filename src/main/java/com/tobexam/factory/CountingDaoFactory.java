@@ -3,8 +3,11 @@ package com.tobexam.factory;
 import com.tobexam.common.*;
 import com.tobexam.dao.*;
 
+import javax.sql.DataSource;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 
 @Configuration
 public class CountingDaoFactory {
@@ -13,9 +16,8 @@ public class CountingDaoFactory {
         UserDao dao = null;
 
         dao = new UserDao();
-        dao.setConnectionMaker(connectionMaker());
-
-        // dao = new UserDao(connectionMaker());
+        
+        dao.setDataSource(dataSource());
 
         return dao;
     }
@@ -50,6 +52,29 @@ public class CountingDaoFactory {
             e.printStackTrace();
         }
         return conConfig;
+    }
+
+    @Bean
+    public DataSource dataSource() {
+        SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
+        XMLParsingConfig parConfig = new XMLParsingConfig();
+        parConfig.setFileName("mysql_conn.xml");
+        ConnectionBean conConfig = null;
+        try {
+            conConfig = parConfig.setConfig();
+
+            String connectionStr = String.format("%s%s", conConfig.getHost(), conConfig.getDatabaseName());
+
+            dataSource.setDriverClass((Class<? extends java.sql.Driver>)Class.forName(conConfig.getClassName()));
+            dataSource.setUrl(connectionStr);
+            dataSource.setUsername(conConfig.getUserName());
+            dataSource.setPassword(conConfig.getUserPass());
+
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+
+        return dataSource;
     }
     
 
