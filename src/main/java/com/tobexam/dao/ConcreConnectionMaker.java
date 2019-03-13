@@ -9,11 +9,11 @@ import java.sql.ResultSet;
 
 import com.tobexam.common.*;
 
-public class SimpleConnectionMaker implements ConnectionMaker {
+public class ConcreConnectionMaker implements ConnectionMaker {
     private ConnectionBean connBean;
     
-    public SimpleConnectionMaker(ConnectionBean connBean) {
-        this.connBean = connBean;   
+    public ConcreConnectionMaker(ConnectionBean connBean) {
+        this.connBean = connBean;
     }
 
     @Override
