@@ -4,7 +4,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
     
     <bean id="connBeanFactory" class="com.tobexam.factory.ConnBeanFactory">
-        <property name="fileName" value="mysql_conn.xml" />
+        <property name="fileName" value="oracle_conn.xml" />
     </bean>
     
     <bean id="getConnection" class="com.tobexam.dao.ConcreConnectionMaker">
