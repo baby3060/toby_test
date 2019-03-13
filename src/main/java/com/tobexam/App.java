@@ -13,18 +13,25 @@ public class App {
 
         User user = new User();
         
-        ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
+        ApplicationContext context = new AnnotationConfigApplicationContext(CountingDaoFactory.class);
 
         UserDao userDao = context.getBean("userDao", UserDao.class);
+        
+        CountingConnectionMaker countMaker = context.getBean("connectionMaker", CountingConnectionMaker.class);
 
         try {
             user = userDao.get("111");
 
             System.out.println(user);
 
+            System.out.println("Connection counter(1) : " + countMaker.getCounter());
+
             int count = userDao.countAll();
 
             System.out.println("All Count : " + count);
+
+            System.out.println("Connection counter(2) : " + countMaker.getCounter());
+
         } catch(Exception e) {
             e.printStackTrace();
         }
