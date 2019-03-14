@@ -20,9 +20,9 @@
 
 3. pom.xml dependency 추가
 <pre>
-    <dependency>
-		    <groupId>[위의 -DgroupId]</groupId>
-		    <artifactId>[위의 -DartifactId]</artifactId>
-		    <version>[위의 -Dversion]</version>
-		</dependency>
+<dependency>
+<groupId>[위의 -DgroupId]</groupId>
+<artifactId>[위의 -DartifactId]</artifactId>
+<version>[위의 -Dversion]</version>
+</dependency>
 </pre>
