@@ -7,10 +7,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import javax.sql.DataSource;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public class UserDao {
-    @Autowired
     private DataSource dataSource;
 
     public void setDataSource(DataSource dataSource) {
