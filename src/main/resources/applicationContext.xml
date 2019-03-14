@@ -8,9 +8,7 @@
     </bean>
 
     <bean id="connBean" class="com.tobexam.common.ConnectionBean"
-        factory-bean="xmlParsing" factory-method="setConfig"
-    >
-    </bean>
+        factory-bean="xmlParsing" factory-method="setConfig" />
     
     <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
         <property name="driverClass" value="#{connBean.getClassName()}" />

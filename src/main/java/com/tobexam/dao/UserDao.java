@@ -7,28 +7,16 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import javax.sql.DataSource;
-
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class UserDao {
-    // private ConnectionMaker connectionMaker;
+    @Autowired
     private DataSource dataSource;
-
-    public UserDao() {}
 
     public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
     }
-
-    /*
-    public UserDao(ConnectionMaker connectionMaker) {
-        this.connectionMaker = connectionMaker;   
-    }
-
-    public void setConnectionMaker(ConnectionMaker connectionMaker) {
-        this.connectionMaker = connectionMaker;
-    }
-    */
-
+    
     // User Add
     public int add(User user) throws Exception {
         int result = 0;
@@ -37,8 +25,6 @@ public class UserDao {
 
         try {
             String sql = "Insert Into USER(id, name, password) Values (?, ?, ?) ";
-
-            // conn = connectionMaker.getConnection();
 
             conn = dataSource.getConnection();
 
@@ -50,7 +36,6 @@ public class UserDao {
 
             result = pstmt.executeUpdate();
 
-        // } catch(ClassNotFoundException | SQLException e ) {
         } catch(SQLException e ) {
             throw new Exception(e);
         } finally {
