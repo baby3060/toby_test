@@ -18,14 +18,7 @@ public class App {
         UserDao userDao = context.getBean("userDao", UserDao.class);
         
         try {
-            user = userDao.get("111");
-
-            System.out.println(user);
-
-            int count = userDao.countAll();
-
-            System.out.println("All Count : " + count);
-
+            
         } catch(Exception e) {
             e.printStackTrace();
         }
