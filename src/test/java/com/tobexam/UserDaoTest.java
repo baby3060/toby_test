@@ -1,5 +1,10 @@
 package com.tobexam;
 
+import org.junit.Test;
+
+import static org.junit.Assert.assertThat;
+import static org.hamcrest.CoreMatchers.is;
+
 import com.tobexam.model.*;
 import com.tobexam.dao.*;
 
@@ -8,9 +13,9 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.support.GenericXmlApplicationContext;
 
 
-public class App {
-    public static void main( String[] args ) {
-        
+public class UserDaoTest {
+    @Test
+    public void addAndGet() {
         User user = new User();
         
         ApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");
@@ -18,17 +23,9 @@ public class App {
         UserDao userDao = context.getBean("userDao", UserDao.class);
         
         try {
-            user = userDao.get("111");
-
-            System.out.println(user);
-
-            int count = userDao.countAll();
-
-            System.out.println("All Count : " + count);
-
+            
         } catch(Exception e) {
             e.printStackTrace();
         }
-        
     }
 }
