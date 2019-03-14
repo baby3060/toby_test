@@ -7,6 +7,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import javax.sql.DataSource;
+import org.springframework.dao.EmptyResultDataAccessException;
 
 public class UserDao {
     private DataSource dataSource;
@@ -57,7 +58,7 @@ public class UserDao {
         return result;
     }
 
-    public User get(String id) throws Exception {
+    public User get(String id) throws EmptyResultDataAccessException, Exception {
         User user = null;
         Connection conn = null;
         PreparedStatement pstmt = null;
@@ -80,9 +81,20 @@ public class UserDao {
                 user.setName(rs.getString("name"));
                 user.setPassword(rs.getString("password"));
             }
+
+            if( user == null ) {
+                throw new EmptyResultDataAccessException(1);
+            }
         } catch(SQLException e ) {
             throw new Exception(e);
         } finally {
+            if(rs != null) {
+                try {
+                    rs.close();
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+            }
             if(pstmt != null) {
                 try {
                     pstmt.close();
@@ -124,6 +136,13 @@ public class UserDao {
         } catch(SQLException e ) {
             throw new Exception(e);
         } finally {
+            if(rs != null) {
+                try {
+                    rs.close();
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+            }
             if(pstmt != null) {
                 try {
                     pstmt.close();
