@@ -53,5 +53,27 @@
 >> 특정 구체 클래스를 사용한다.
 >>> 하지만, 특정 구체 클래스가 아닌 인터페이스를 받고, 중복되는 부분을 캡슐화한다면 사용할 수 있다. : 템플릿 메소드에 인터페이스를 인자로 넘겨받아서 그 인터페이스의 메소드를 실행
 >>> 전략 패턴을 사용하여 특정 구체를 사용하게 되면, 그 특정 구현 클래스에 의존하는 것이므로 좋지 않다. 여기서는 전략을 무명 클래스로 생성하여, 이 템플릿 메소드에 바로 넘기면 된다.
->> update 및 query를 수행하는 메소드의 경우 다른 Dao(UserDao)에서도 사용하므로, UserDao에만 있는 것은 좋지 않다. 따라서 이 메소드는 다른 클래스(JdbcContext)에서 생성하고, UserDao에서는 이 JdbcContext 클래스에 의존하여, 이 클래스의 메소드를 호출하면 된다.
+>> update 및 query를 수행하는 메소드의 경우 다른 Dao(UserDao)에서도 사용하므로, UserDao에만 있는 것은 좋지 않다. 따라서 이 메소드는 다른 클래스(JdbcContext : Context 인터페이스 구현)에서 생성하고, UserDao에서는 이 JdbcContext 클래스에 의존하여, 이 클래스의 메소드를 호출하면 된다.
 >> 이제, 설정에서는 UserDao의 DataSource 의존은 필요 없고(완전히 수정하지 않았을 경우에 없애면 안 된다), JdbcContext에서 DataSource를 의존하고, 이 UserDao에서는 JdbcContext를 의존하면 된다.
+>>> JdbcContext를 스프링 Bean으로 의존하지 않는 방법도 있다.
+>> 설정 XML에서 jdbcContext 부분을 모두 빼주고, UserDao에서 
+<pre>
+<code>
+  public void setDataSource(DataSource dataSource) {
+      this.dataSource = dataSource;
+  }
+</code>
+</pre>
+이 부분을
+<pre>
+<code>
+  public void setDataSource(DataSource dataSource) {
+      this.jdbcContext = new JdbcContext();
+
+      this.jdbcContext.setDataSource(dataSource);
+      
+      this.dataSource = dataSource;
+  }
+</code>
+</pre>
+로 바꿔주면, jdbcContext를 Bean으로 등록하지 않고, DI하는 식이 된다.
