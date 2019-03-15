@@ -198,46 +198,6 @@ public class UserDao_Mod {
         return count;
     }
 
-    public int delete(String id) throws Exception {
-        int result = 0;
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-
-        try {
-            String sql = "Delete From USER Where id = ? ";
-
-            conn = dataSource.getConnection();
-
-            pstmt = conn.prepareStatement(sql);
-
-            pstmt.setString(1, id);
-
-            result = pstmt.executeUpdate();
-
-        } catch(SQLException e ) {
-            throw new Exception(e);
-        } finally {
-            if(pstmt != null) {
-                try {
-                    pstmt.close();
-                } catch(Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-            if(conn != null) {
-                try {
-                    conn.close();
-                } catch(Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-        }
-
-        return result;
-    }
-
     public List<User> selectAll() throws Exception {
         List<User> userList = new ArrayList<User>();
         User user = null;
