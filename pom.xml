@@ -82,9 +82,11 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>3.0.0-M3</version>
         <!-- 테스트할 클래스들 따로 지정(안 하면 하나만 실행) -->
+        <!-- 
         <configuration>
           <test>com.tobexam.*Test*</test>
         </configuration>
+        -->
       </plugin>
     
 
