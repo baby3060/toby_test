@@ -18,7 +18,46 @@ public class UserDao_Mod {
     public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
     }
-    
+
+    public void deleteAll() throws Exception {        
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+
+        try {
+            String sql = "Delete From USER ";
+
+            conn = dataSource.getConnection();
+
+            pstmt = makeStatement(conn, sql);
+
+            pstmt.executeUpdate();
+        } catch(SQLException e ) {
+            throw new Exception(e);
+        } finally {
+            if(pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if(conn != null) {
+                try {
+                    conn.close();
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private PreparedStatement makeStatement(Connection connection, String sql) throws SQLException {
+        PreparedStatement pstmt;
+        pstmt = connection.prepareStatement(sql);
+        return pstmt;
+    }
+
     // User Add
     public int add(User user) throws Exception {
         int result = 0;
@@ -180,44 +219,6 @@ public class UserDao_Mod {
             pstmt = conn.prepareStatement(sql);
 
             pstmt.setString(1, id);
-
-            result = pstmt.executeUpdate();
-
-        } catch(SQLException e ) {
-            throw new Exception(e);
-        } finally {
-            if(pstmt != null) {
-                try {
-                    pstmt.close();
-                } catch(Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-            if(conn != null) {
-                try {
-                    conn.close();
-                } catch(Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-        }
-
-        return result;
-    }
-
-    public int deleteAll() throws Exception {
-        int result = 0;
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-
-        try {
-            String sql = "Delete From USER ";
-
-            conn = dataSource.getConnection();
-
-            pstmt = conn.prepareStatement(sql);
 
             result = pstmt.executeUpdate();
 
