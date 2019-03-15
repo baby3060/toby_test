@@ -78,6 +78,6 @@
 </pre>
 로 바꿔주면, jdbcContext를 Bean으로 등록하지 않고, DI하는 식이 된다.
 
-## 콜백을 수행하는 메소드(jdbcContext의 updateStrategyContext)를 다시 콜백(jdbcContext의 executeSql) 형태로 만들어서, 보다 간소화 하였다. 매개변수를 가변인자로 받았고, 그 타입에 따라 값 설정을 해주었다. 물론 여기서 더 많은 타입이 들어가게 되면, 이걸 수정해줘야 한다.
+### 콜백을 수행하는 메소드(jdbcContext의 updateStrategyContext)에서 다시 콜백(jdbcContext의 executeSql) 메소드를 호출하여 보다 간소화 하였다. 매개변수를 가변인자로 받았고, 그 타입에 따라 값 설정을 해주었다. PreParedStatement의 set~ 메소드의 종류에 따라 더 추가해주면 된다.
 
-## 실행 구문은 축약하였으니 이제 조회 구문을 축약해야 한다.
+### 실행구문은 완료하였으니, 이제 조회 구문을 만들어야 한다. 조회의 경우, 숫자, 객체, List 이렇게 세 가지로 만든다.
