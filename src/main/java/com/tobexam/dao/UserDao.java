@@ -1,12 +1,15 @@
 package com.tobexam.dao;
 
 import com.tobexam.model.User;
+
+import java.util.*;
 import java.sql.SQLException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import javax.sql.DataSource;
+
 import org.springframework.dao.EmptyResultDataAccessException;
 
 public class UserDao {
@@ -240,6 +243,63 @@ public class UserDao {
         }
 
         return result;
+    }
+
+    public List<User> selectAll() throws Exception {
+        List<User> userList = new ArrayList<User>();
+        User user = null;
+
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            String sql = "Select id, name, password From USER ";
+
+            conn = dataSource.getConnection();
+
+            pstmt = conn.prepareStatement(sql);
+
+            rs = pstmt.executeQuery();
+
+            while( rs.next() ) {
+                user = new User();
+
+                user.setId(rs.getString("id"));
+                user.setName(rs.getString("name"));
+                user.setPassword(rs.getString("password"));
+
+                userList.add(user);
+            }
+
+        } catch(SQLException e ) {
+            throw new Exception(e);
+        } finally {
+            if(rs != null) {
+                try {
+                    rs.close();
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            if(pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if(conn != null) {
+                try {
+                    conn.close();
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return userList;
     }
 
 }
