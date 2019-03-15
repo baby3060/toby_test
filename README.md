@@ -77,3 +77,5 @@
 </code>
 </pre>
 로 바꿔주면, jdbcContext를 Bean으로 등록하지 않고, DI하는 식이 된다.
+
+## 콜백을 수행하는 메소드(jdbcContext의 updateStrategyContext)를 다시 콜백(jdbcContext의 executeSql) 형태로 만들어서, 보다 간소화 하였다. 매개변수를 가변인자로 받았고, 그 타입에 따라 값 설정을 해주었다. 물론 여기서 더 많은 타입이 들어가게 되면, 이걸 수정해줘야 한다.

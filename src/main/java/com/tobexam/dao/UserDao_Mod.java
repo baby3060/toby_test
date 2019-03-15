@@ -24,73 +24,22 @@ public class UserDao_Mod {
         this.dataSource = dataSource;
     }
 
-    // updateStrategyContext라는 메소드에 자원해제 및 update
-    public void deleteAll() throws Exception {        
-        Result result = new Result();
-
-        this.jdbcContext.updateStrategyContext(new StatementStrategy() {
-            public PreparedStatement makePreparedStatement(Connection conn) throws SQLException {
-                String sql = "Delete From USER ";
-
-                PreparedStatement pstmt = conn.prepareStatement(sql);
-
-                return pstmt;
-            }
-        }, result);
+    public void deleteAll() throws Exception {      
+        this.jdbcContext.executeSql("Delete From USER");
     }
 
     // User Add
     // 내부 익명클래스에서 사용하려면 외부 인자는 final이어야 함
     public void add(final User user) throws Exception {
-        Result result = new Result();
-
-        this.jdbcContext.updateStrategyContext(new StatementStrategy() {
-            public PreparedStatement makePreparedStatement(Connection conn) throws SQLException {
-                String sql = "Insert Into USER(id, name, password) Values (?, ?, ?) ";
-
-                PreparedStatement pstmt = conn.prepareStatement(sql);
-
-                pstmt.setString(1, user.getId());
-                pstmt.setString(2, user.getName());
-                pstmt.setString(3, user.getPassword());
-
-                return pstmt;
-            }
-        }, result);
+        this.jdbcContext.executeSql("Insert Into USER(id, name, password) Values (?, ?, ?) ", user.getId(), user.getName(), user.getPassword());
     }
 
     public void update(final User user) throws Exception {
-        Result result = new Result();
-
-        this.jdbcContext.updateStrategyContext(new StatementStrategy() {
-            public PreparedStatement makePreparedStatement(Connection conn) throws SQLException {
-                String sql = "Update USER set name = ?, password = ? Where id = ? ";
-
-                PreparedStatement pstmt = conn.prepareStatement(sql);
-
-                pstmt.setString(1, user.getName());
-                pstmt.setString(2, user.getPassword());
-                pstmt.setString(3, user.getId());
-
-                return pstmt;
-            }
-        }, result);
+        this.jdbcContext.executeSql("Update USER set name = ?, password = ? Where id = ? ", user.getName(), user.getPassword(), user.getId());
     }
 
     public void delete(final User user) throws Exception {
-        Result result = new Result();
-
-        this.jdbcContext.updateStrategyContext(new StatementStrategy() {
-            public PreparedStatement makePreparedStatement(Connection conn) throws SQLException {
-                String sql = "Delete From USER Where id = ? ";
-
-                PreparedStatement pstmt = conn.prepareStatement(sql);
-
-                pstmt.setString(1, user.getId());
-
-                return pstmt;
-            }
-        }, result);
+        this.jdbcContext.executeSql("Delete From USER Where id = ?", user.getId());
     }
 
     public User get(String id) throws EmptyResultDataAccessException, Exception {

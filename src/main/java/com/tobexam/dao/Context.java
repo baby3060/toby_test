@@ -5,5 +5,5 @@ import java.sql.SQLException;
 
 public interface Context {
     public void setDataSource(DataSource dataSource);
-    public void updateStrategyContext(StatementStrategy strategy, Result result) throws SQLException;
+    public void executeSql(final String sql, Object ...param) throws SQLException;
 }
