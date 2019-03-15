@@ -48,16 +48,18 @@ public class UserDaoTest_NoSpring {
         User user = new User();
         
         try {
-            int result = userDao.deleteAll();
+            userDao.deleteAll();
             int count = userDao.countAll();
             
-            assertThat(userDao.countAll(), is(0));
+            assertThat(count, is(0));
             
             user = new User("1234", "1234", "12345");
 
-            result = userDao.add(user);
+            userDao.add(user);
 
-            assertThat(userDao.countAll(), is(1));
+            count = userDao.countAll();
+
+            assertThat(count, is(1));
 
             User user2 = userDao.get("1234");
 
