@@ -19,7 +19,12 @@
         <property name="password" value="#{connBean.getUserPass()}" />
     </bean>
 
+    <bean id="jdbcContext" class="com.tobexam.dao.JdbcContext">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+
     <bean id="userDao" class="com.tobexam.dao.UserDao_Mod">
+        <property name="jdbcContext" ref="jdbcContext" />
         <property name="dataSource" ref="dataSource" />
     </bean>
 </beans>
