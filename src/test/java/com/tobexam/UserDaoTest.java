@@ -22,13 +22,13 @@ import org.springframework.test.context.ContextConfiguration;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations="/applicationContext.xml")
 public class UserDaoTest {
-    private UserDao userDao;
+    private UserDao_Mod userDao;
 
     @Before
     public void setUp() {
         ApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");
 
-        userDao = context.getBean("userDao", UserDao.class);
+        userDao = context.getBean("userDao", UserDao_Mod.class);
     }
 
     @Test
@@ -57,6 +57,7 @@ public class UserDaoTest {
         }
     }
 
+    // 예외가 발생하면 테스트 성공
     @Test(expected=EmptyResultDataAccessException.class)
     public void getUserFailure() throws Exception, SQLException {
         
@@ -65,5 +66,7 @@ public class UserDaoTest {
         // 예외가 안 발생할 때는? => 테스트 실패
         // User user = userDao.get("1234");
     }
+
+    
 
 }

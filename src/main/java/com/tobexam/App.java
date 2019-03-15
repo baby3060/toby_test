@@ -15,7 +15,7 @@ public class App {
         
         ApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");
 
-        UserDao userDao = context.getBean("userDao", UserDao.class);
+        UserDao_Mod userDao = context.getBean("userDao", UserDao_Mod.class);
         
         try {
             

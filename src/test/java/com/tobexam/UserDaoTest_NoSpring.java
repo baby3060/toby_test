@@ -24,7 +24,7 @@ public class UserDaoTest_NoSpring {
     private ConnectionBean connBean;
     private XMLParsingConfig config;
 
-    private UserDao userDao;
+    private UserDao_Mod userDao;
 
     @Before
     public void setUp() {
@@ -33,7 +33,7 @@ public class UserDaoTest_NoSpring {
         try {
             connBean = config.setConfig();
 
-            userDao = new UserDao();
+            userDao = new UserDao_Mod();
 
             DataSource dataSource = new SingleConnectionDataSource(connBean.getConnStr(), connBean.getUserName(), connBean.getUserPass(), true);
             userDao.setDataSource(dataSource);
@@ -73,9 +73,9 @@ public class UserDaoTest_NoSpring {
     public void getUserFailure2() throws Exception, SQLException {
         
         // 예외 발생
-        // User user = userDao.get("1234");
+        User user = userDao.get("unknown_id");
         // 예외가 안 발생할 때는? => 테스트 실패
-        User user = userDao.get("1234");
+        // User user = userDao.get("1234");
     }
 
 }
