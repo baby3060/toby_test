@@ -73,10 +73,6 @@ public class UserDaoTest {
     public void updateAndGet() {
         
         try {
-            int count = userDao.countAll();
-            
-            assertThat(count, is(1));
-            
             User user = userDao.get("1234");
 
             assertThat(user.getName(), is("1234"));

@@ -13,7 +13,12 @@ import javax.sql.DataSource;
 import org.springframework.dao.EmptyResultDataAccessException;
 
 public class UserDao_Mod {
+    private Context jdbcContext;
     private DataSource dataSource;
+
+    public void setJdbcContext(Context jdbcContext) {
+        this.jdbcContext = jdbcContext;
+    }
 
     public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
@@ -23,7 +28,7 @@ public class UserDao_Mod {
     public void deleteAll() throws Exception {        
         Result result = new Result();
 
-        updateStrategyContext(new StatementStrategy() {
+        this.jdbcContext.updateStrategyContext(new StatementStrategy() {
             public PreparedStatement makePreparedStatement(Connection conn) throws SQLException {
                 String sql = "Delete From USER ";
 
@@ -39,7 +44,7 @@ public class UserDao_Mod {
     public void add(final User user) throws Exception {
         Result result = new Result();
 
-        updateStrategyContext(new StatementStrategy() {
+        this.jdbcContext.updateStrategyContext(new StatementStrategy() {
             public PreparedStatement makePreparedStatement(Connection conn) throws SQLException {
                 String sql = "Insert Into USER(id, name, password) Values (?, ?, ?) ";
 
@@ -57,7 +62,7 @@ public class UserDao_Mod {
     public void update(final User user) throws Exception {
         Result result = new Result();
 
-        updateStrategyContext(new StatementStrategy() {
+        this.jdbcContext.updateStrategyContext(new StatementStrategy() {
             public PreparedStatement makePreparedStatement(Connection conn) throws SQLException {
                 String sql = "Update USER set name = ?, password = ? Where id = ? ";
 
@@ -66,6 +71,22 @@ public class UserDao_Mod {
                 pstmt.setString(1, user.getName());
                 pstmt.setString(2, user.getPassword());
                 pstmt.setString(3, user.getId());
+
+                return pstmt;
+            }
+        }, result);
+    }
+
+    public void delete(final User user) throws Exception {
+        Result result = new Result();
+
+        this.jdbcContext.updateStrategyContext(new StatementStrategy() {
+            public PreparedStatement makePreparedStatement(Connection conn) throws SQLException {
+                String sql = "Delete From USER Where id = ? ";
+
+                PreparedStatement pstmt = conn.prepareStatement(sql);
+
+                pstmt.setString(1, user.getId());
 
                 return pstmt;
             }
@@ -172,7 +193,6 @@ public class UserDao_Mod {
                     e.printStackTrace();
                 }
             }
-
         }
 
         return count;
@@ -275,37 +295,5 @@ public class UserDao_Mod {
         return userList;
     }
 
-    // 전략을 입력받아서 executeUpdate를 행하는 메소드
-    // try ~ catch ~ finally 부분을 분리하였다.
-    public void updateStrategyContext(StatementStrategy strategy, Result result) throws SQLException {
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-
-        try {
-            conn = dataSource.getConnection();
-
-            pstmt = strategy.makePreparedStatement(conn);
-
-            result.setResult(pstmt.executeUpdate());
-        } catch(SQLException e) {
-            throw e;
-        } finally {
-            if(pstmt != null) { try { pstmt.close(); } catch(Exception e) { e.printStackTrace(); } }
-            if(conn != null) { try { conn.close(); } catch(Exception e) { e.printStackTrace(); } }
-        }
-    }
-
-    // executeUpdate 결과값 저장할 임시 클래스
-    class Result {
-        private int result;
-
-        public void setResult(int result) {
-            this.result = result;
-        }
-
-        public int getResult() {
-            return this.result;
-        }
-    }
-
+    
 }
