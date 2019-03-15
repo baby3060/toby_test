@@ -19,85 +19,57 @@ public class UserDao_Mod {
         this.dataSource = dataSource;
     }
 
+    // updateStrategyContext라는 메소드에 자원해제 및 update
     public void deleteAll() throws Exception {        
-        Connection conn = null;
-        PreparedStatement pstmt = null;
+        Result result = new Result();
 
-        try {
-            String sql = "Delete From USER ";
+        updateStrategyContext(new StatementStrategy() {
+            public PreparedStatement makePreparedStatement(Connection conn) throws SQLException {
+                String sql = "Delete From USER ";
 
-            conn = dataSource.getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(sql);
 
-            pstmt = makeStatement(conn, sql);
-
-            pstmt.executeUpdate();
-        } catch(SQLException e ) {
-            throw new Exception(e);
-        } finally {
-            if(pstmt != null) {
-                try {
-                    pstmt.close();
-                } catch(Exception e) {
-                    e.printStackTrace();
-                }
+                return pstmt;
             }
-
-            if(conn != null) {
-                try {
-                    conn.close();
-                } catch(Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    private PreparedStatement makeStatement(Connection connection, String sql) throws SQLException {
-        PreparedStatement pstmt;
-        pstmt = connection.prepareStatement(sql);
-        return pstmt;
+        }, result);
     }
 
     // User Add
-    public int add(User user) throws Exception {
-        int result = 0;
-        Connection conn = null;
-        PreparedStatement pstmt = null;
+    // 내부 익명클래스에서 사용하려면 외부 인자는 final이어야 함
+    public void add(final User user) throws Exception {
+        Result result = new Result();
 
-        try {
-            String sql = "Insert Into USER(id, name, password) Values (?, ?, ?) ";
+        updateStrategyContext(new StatementStrategy() {
+            public PreparedStatement makePreparedStatement(Connection conn) throws SQLException {
+                String sql = "Insert Into USER(id, name, password) Values (?, ?, ?) ";
 
-            conn = dataSource.getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(sql);
 
-            pstmt = conn.prepareStatement(sql);
+                pstmt.setString(1, user.getId());
+                pstmt.setString(2, user.getName());
+                pstmt.setString(3, user.getPassword());
 
-            pstmt.setString(1, user.getId());
-            pstmt.setString(2, user.getName());
-            pstmt.setString(3, user.getPassword());
-
-            result = pstmt.executeUpdate();
-
-        } catch(SQLException e ) {
-            throw new Exception(e);
-        } finally {
-            if(pstmt != null) {
-                try {
-                    pstmt.close();
-                } catch(Exception e) {
-                    e.printStackTrace();
-                }
+                return pstmt;
             }
+        }, result);
+    }
 
-            if(conn != null) {
-                try {
-                    conn.close();
-                } catch(Exception e) {
-                    e.printStackTrace();
-                }
+    public void update(final User user) throws Exception {
+        Result result = new Result();
+
+        updateStrategyContext(new StatementStrategy() {
+            public PreparedStatement makePreparedStatement(Connection conn) throws SQLException {
+                String sql = "Update USER set name = ?, password = ? Where id = ? ";
+
+                PreparedStatement pstmt = conn.prepareStatement(sql);
+
+                pstmt.setString(1, user.getName());
+                pstmt.setString(2, user.getPassword());
+                pstmt.setString(3, user.getId());
+
+                return pstmt;
             }
-        }
-
-        return result;
+        }, result);
     }
 
     public User get(String id) throws EmptyResultDataAccessException, Exception {
@@ -301,6 +273,39 @@ public class UserDao_Mod {
         }
 
         return userList;
+    }
+
+    // 전략을 입력받아서 executeUpdate를 행하는 메소드
+    // try ~ catch ~ finally 부분을 분리하였다.
+    public void updateStrategyContext(StatementStrategy strategy, Result result) throws SQLException {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+
+        try {
+            conn = dataSource.getConnection();
+
+            pstmt = strategy.makePreparedStatement(conn);
+
+            result.setResult(pstmt.executeUpdate());
+        } catch(SQLException e) {
+            throw e;
+        } finally {
+            if(pstmt != null) { try { pstmt.close(); } catch(Exception e) { e.printStackTrace(); } }
+            if(conn != null) { try { conn.close(); } catch(Exception e) { e.printStackTrace(); } }
+        }
+    }
+
+    // executeUpdate 결과값 저장할 임시 클래스
+    class Result {
+        private int result;
+
+        public void setResult(int result) {
+            this.result = result;
+        }
+
+        public int getResult() {
+            return this.result;
+        }
     }
 
 }
