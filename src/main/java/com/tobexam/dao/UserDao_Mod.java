@@ -147,6 +147,54 @@ public class UserDao_Mod {
         return count;
     }
 
+    public int countAll(String id) throws Exception {
+        int count = 0;
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            String sql = "Select Count(*) As cnt From USER Where id = ? ";
+
+            conn = dataSource.getConnection();
+
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, id);
+            rs = pstmt.executeQuery();
+
+            if( rs.next() ) {
+                count = rs.getInt("cnt");
+            }
+        } catch(SQLException e ) {
+            throw new Exception(e);
+        } finally {
+            if(rs != null) {
+                try {
+                    rs.close();
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            if(pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if(conn != null) {
+                try {
+                    conn.close();
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return count;
+    }
+
     public List<User> selectAll() throws Exception {
         List<User> userList = new ArrayList<User>();
         User user = null;
@@ -203,6 +251,4 @@ public class UserDao_Mod {
 
         return userList;
     }
-
-    
 }
