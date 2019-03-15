@@ -18,6 +18,24 @@ public class App {
         UserDao_Mod userDao = context.getBean("userDao", UserDao_Mod.class);
         
         try {
+            userDao.deleteAll();
+
+            user = new User("1234", "1234", "12345");
+
+            userDao.add(user);
+
+            System.out.println(user);
+
+            user = userDao.get("1234");
+
+            user.setName("테스트");
+            user.setPassword("테스트 비번");
+
+            userDao.update(user);
+
+            user = userDao.get("1234");
+
+            System.out.println(user);
             
         } catch(Exception e) {
             e.printStackTrace();
