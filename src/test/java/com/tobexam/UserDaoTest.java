@@ -73,20 +73,24 @@ public class UserDaoTest {
     public void updateAndGet() {
         
         try {
+            int count = userDao.count("1234");
+
+            assertThat(count, is(1));
+
             User user = userDao.get("1234");
 
-            assertThat(user.getName(), is("1234"));
-            assertThat(user.getPassword(), is("12345"));
+            assertThat(user.getName(), is("테스트"));
+            assertThat(user.getPassword(), is("테스트 비번"));
             
-            user.setName("테스트");
-            user.setPassword("테스트 비번");
+            user.setName("1234");
+            user.setPassword("12345");
 
             userDao.update(user);
 
             user = userDao.get("1234");
 
-            assertThat(user.getName(), is("테스트"));
-            assertThat(user.getPassword(), is("테스트 비번"));
+            assertThat(user.getName(), is("1234"));
+            assertThat(user.getPassword(), is("12345"));
 
         } catch(Exception e) {
             e.printStackTrace();
