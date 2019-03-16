@@ -78,6 +78,142 @@
 </pre>
 로 바꿔주면, jdbcContext를 Bean으로 등록하지 않고, DI하는 식이 된다.
 
-### 콜백을 수행하는 메소드(jdbcContext의 updateStrategyContext)에서 다시 콜백(jdbcContext의 executeSql) 메소드를 호출하여 보다 간소화 하였다. 매개변수를 가변인자로 받았고, 그 타입에 따라 값 설정을 해주었다. PreParedStatement의 set~ 메소드의 종류에 따라 더 추가해주면 된다.
+### 콜백을 수행하는 메소드(jdbcContext의 updateStrategyContext)에서 다시 콜백(jdbcContext의 executeSql) 메소드를 호출하여 UserDao에서의 로직을 보다 간소화 하였다. 
+#### UserDao의 실행 메소드에서 콜백을 위한 익명 클래스 생성까지 하자니 그래도 길었다(deleteAll을 기준으로).
+
+1.  deleteAll에 있는 코드를 모두 executeSql이라는 메소드로 옮겼다.
+
+<pre>
+<code>
+  // In UserDao.java
+
+  public void executeSql() throws SQLException {
+
+        this.jdbcContext.updateStrategyContext(new StatementStrategy() {
+            public PreparedStatement makePreparedStatement(Connection connection) throws SQLException {
+                String sql = "Delete From USER";
+
+                PreparedStatement pstmt = connection.prepareStatement(sql);
+
+                return pstmt;
+            }
+        });
+    }
+</code>
+</pre>
+
+2. 이 실행 문장은 UserDao에서만 사용하는 것이 아니므로, jdbcContext로 옮겼다. 그리고 deleteAll에서는 jdbcContext의 executeSql()을 호출하였다.
+
+<pre>
+<code>
+  // In JdbcContext.java
+
+  public void executeSql() throws SQLException {
+
+        updateStrategyContext(new StatementStrategy() {
+            public PreparedStatement makePreparedStatement(Connection connection) throws SQLException {
+                String sql = "Delete From USER";
+
+                PreparedStatement pstmt = connection.prepareStatement(sql);
+
+                return pstmt;
+            }
+        });
+    }
+</code>
+
+<code>
+  public void deleteAll() throws SQLException {
+    this.jdbcContext.executeSql();
+  }
+</code>
+
+</pre>
+
+3. sql문이 항상 바뀌게 된다. 이것을 입력받게 수정하였다(내부 익명 클래스에서 외부 인자를 사용할 때는 final로 선언).
+
+<pre>
+<code>
+  public void executeSql(final String sql) throws SQLException {
+
+        updateStrategyContext(new StatementStrategy() {
+            public PreparedStatement makePreparedStatement(Connection connection) throws SQLException {
+                PreparedStatement pstmt = connection.prepareStatement(sql);
+
+                return pstmt;
+            }
+        });
+    }
+</code>
+
+<code>
+  public void deleteAll() throws SQLException {
+    this.jdbcContext.executeSql("Delete From USER");
+  }
+</code>
+
+</pre>
+
+4. deleteAll같은 경우에는 매개변수가 필요없었지만, add, update, delete와 같은 경우에는 특정 필드가 필요하다. add와 delete의 경우에는 Target Object를 그대로 넘기면 어느 정도는 매핑이 되겠지만, Update 같은 경우에는 다르다. 따라서 필드를 넘겨받았다(Java 5의 가변인자).
+
+<pre>
+<code>
+  public void executeSql(final String sql, Object ...args) throws SQLException {
+
+        updateStrategyContext(new StatementStrategy() {
+            public PreparedStatement makePreparedStatement(Connection connection) throws SQLException {
+                PreparedStatement pstmt = connection.prepareStatement(sql);
+
+                return pstmt;
+            }
+        });
+    }
+</code>
+
+<code>
+  public void delete(String id) throws SQLException {
+    this.jdbcContext.executeSql("Delete From USER Where id = ? ", id);
+  }
+</code>
+
+</pre>
+
+5. pstmt에 순서대로 클래스타입에 맞춰서 매핑해주었다. 
+
+<pre>
+<code>
+  public void executeSql(final String sql, Object ...args) throws SQLException {
+
+        updateStrategyContext(new StatementStrategy() {
+            public PreparedStatement makePreparedStatement(Connection connection) throws SQLException {
+                int index = 1;
+
+                PreparedStatement pstmt = connection.prepareStatement(sql);
+
+                if( param.length > 0 ) {
+                    for(Object obj : param) {
+                        if( obj instanceof Integer ) {
+                            pstmt.setInt(index, (Integer)obj);
+                        } else if( obj instanceof String ) {
+                            pstmt.setString(index, (String)obj);
+                        } else if( obj instanceof Double ) {
+                            pstmt.setDouble(index, (Double)obj);
+                        } else if( obj instanceof Float ) {
+                            pstmt.setFloat(index, (Float)obj);
+                        } else if( obj instanceof Long ) {
+                            pstmt.setLong(index, (Long)obj);
+                        }
+                        index++;
+                    }
+                }
+
+                return pstmt;
+            }
+        });
+    }
+</code>
+</pre>
+
+##### PreParedStatement의 set~ 메소드의 종류에 따라 더 추가해주면 된다.
 
 ### 실행구문은 완료하였으니, 이제 조회 구문을 만들어야 한다. 조회의 경우, 숫자, 객체, List 이렇게 세 가지로 만든다.
