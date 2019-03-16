@@ -43,6 +43,7 @@ public class UserDao_Mod {
     }
 
     public User get(String id) throws EmptyResultDataAccessException, Exception {
+        
         User user = null;
         Connection conn = null;
         PreparedStatement pstmt = null;
@@ -100,49 +101,7 @@ public class UserDao_Mod {
     }
 
     public int countAll() throws Exception {
-        int count = 0;
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-
-        try {
-            String sql = "Select Count(*) As cnt From USER";
-
-            conn = dataSource.getConnection();
-
-            pstmt = conn.prepareStatement(sql);
-
-            rs = pstmt.executeQuery();
-
-            if( rs.next() ) {
-                count = rs.getInt("cnt");
-            }
-        } catch(SQLException e ) {
-            throw new Exception(e);
-        } finally {
-            if(rs != null) {
-                try {
-                    rs.close();
-                } catch(Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            if(pstmt != null) {
-                try {
-                    pstmt.close();
-                } catch(Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-            if(conn != null) {
-                try {
-                    conn.close();
-                } catch(Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        int count = this.jdbcContext.executeQueryOneInt("Select Count(*) As cnt From USER");
 
         return count;
     }
