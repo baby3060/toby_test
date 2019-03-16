@@ -24,7 +24,7 @@ public class UserDaoTest_NoSpring {
     private ConnectionBean connBean;
     private XMLParsingConfig config;
 
-    private UserDao_Mod userDao;
+    private UserDao_Template userDao;
 
     @Before
     public void setUp() {
@@ -33,7 +33,7 @@ public class UserDaoTest_NoSpring {
         try {
             connBean = config.setConfig();
 
-            userDao = new UserDao_Mod();
+            userDao = new UserDao_Template();
 
             DataSource dataSource = new SingleConnectionDataSource(connBean.getConnStr(), connBean.getUserName(), connBean.getUserPass(), true);
             userDao.setDataSource(dataSource);

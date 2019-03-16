@@ -17,7 +17,7 @@ public class App {
         
         ApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");
 
-        UserDao_Mod userDao = context.getBean("userDao", UserDao_Mod.class);
+        UserDao_Template userDao = context.getBean("userDao", UserDao_Template.class);
         
         try {
             userDao.deleteAll();
@@ -30,22 +30,22 @@ public class App {
 
             userDao.add(user);
 
-            user = userDao.get("1234");
+            User oriUser = userDao.get("1234");
 
-            System.out.println(user);
+            System.out.println(oriUser);
             
-            user.setName("테스트");
-            user.setPassword("테스트 비번");
+            oriUser.setName("테스트");
+            oriUser.setPassword("테스트 비번");
 
-            userDao.update(user);
+            userDao.update(oriUser);
 
-            user = userDao.get("1234");
+            oriUser = userDao.get("1234");
             
-            System.out.println(user);
+            System.out.println(oriUser);
 
-            List<User> userList = userDao.selectAll();
+            int count = userDao.countAll();
 
-            System.out.println(userList);
+            System.out.println(count);
 
         } catch(Exception e) {
             e.printStackTrace();

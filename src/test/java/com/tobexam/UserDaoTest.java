@@ -22,13 +22,13 @@ import org.springframework.test.context.ContextConfiguration;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations="/applicationContext.xml")
 public class UserDaoTest {
-    private UserDao_Mod userDao;
+    private UserDao_Template userDao;
 
     @Before
     public void setUp() {
         ApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");
 
-        userDao = context.getBean("userDao", UserDao_Mod.class);
+        userDao = context.getBean("userDao", UserDao_Template.class);
     }
 
     @Test
@@ -73,11 +73,15 @@ public class UserDaoTest {
     public void updateAndGet() {
         
         try {
-            int count = userDao.count("1234");
+            int count = userDao.countAll();
 
-            assertThat(count, is(1));
+            assertThat(count, is(2));
 
             User user = userDao.get("1234");
+
+            count = userDao.count("1234");
+
+            assertThat(count, is(1));
 
             assertThat(user.getName(), is("테스트"));
             assertThat(user.getPassword(), is("테스트 비번"));
