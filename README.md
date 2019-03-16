@@ -216,4 +216,25 @@
 
 ##### PreParedStatement의 set~ 메소드의 종류에 따라 더 추가해주면 된다.
 
-### 실행구문은 완료하였으니, 이제 조회 구문을 만들어야 한다. 조회의 경우, 숫자, 객체, List 이렇게 세 가지로 만든다.
+#### UserDao에서 단일 반환(int : Count) 구현의 경우, PreparedStatement를 만드는 콜백 메소드는 똑같이하고, 따로 int형 result를 반환하는 템플릿 메소드를 정의하여, 그 값을 바로 반환하는 외부 호출 메소드 executeQueryOneInt를 구현하였다.
+
+##### UserDao의 int 필요 메소드에서 다음과 같이 사용하였다.
+
+<pre>
+<code>
+  public int count(String id) throws Exception {
+        int count = this.jdbcContext.executeQueryOneInt("Select Count(*) As cnt From USER Where id = ? ", id);
+
+        return count;
+    }
+
+    public int countAll() throws Exception {
+        int count = this.jdbcContext.executeQueryOneInt("Select Count(*) As cnt From USER");
+
+        return count;
+    }
+</code>
+</pre>
+
+#### 객체 반환 및 리스트 반환의 경우 따로, 콜백으로 안 나눈 이유가 ResultSet은 Connection과 PreparedStatement와 함께 닫히는 것이 좋기 때문. 
+##### 리플렉션을 사용했다.
