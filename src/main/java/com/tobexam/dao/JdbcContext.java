@@ -7,6 +7,9 @@ import java.sql.CallableStatement;
 import java.sql.SQLException;
 import java.sql.Connection;
 
+import java.util.*;
+import java.lang.reflect.*;
+
 public class JdbcContext implements Context {
     private DataSource dataSource;
 
@@ -16,7 +19,8 @@ public class JdbcContext implements Context {
 
     // 전략을 입력받아서 executeUpdate를 행하는 메소드
     // try ~ catch ~ finally 부분을 분리하였다.
-    public void updateStrategyContext(StatementStrategy strategy) throws SQLException {
+    // 전략 실행 메소드
+    private void updateStrategyContext(StatementStrategy strategy) throws SQLException {
         Connection conn = null;
         PreparedStatement pstmt = null;
 
@@ -34,7 +38,7 @@ public class JdbcContext implements Context {
         }
     }
 
-    // executeUpdate문 대비 실행문
+    // executeUpdate문 전용 pstmt 전략 메소드
     public void executeSql(final String sql, Object ...param) throws SQLException {
         updateStrategyContext(new StatementStrategy() {
             public PreparedStatement makePreparedStatement(Connection connection) throws SQLException {
@@ -42,29 +46,15 @@ public class JdbcContext implements Context {
 
                 PreparedStatement pstmt = connection.prepareStatement(sql);
 
-                if( param.length > 0 ) {
-                    for(Object obj : param) {
-                        if( obj instanceof Integer ) {
-                            pstmt.setInt(index, (Integer)obj);
-                        } else if( obj instanceof String ) {
-                            pstmt.setString(index, (String)obj);
-                        } else if( obj instanceof Double ) {
-                            pstmt.setDouble(index, (Double)obj);
-                        } else if( obj instanceof Float ) {
-                            pstmt.setFloat(index, (Float)obj);
-                        } else if( obj instanceof Long ) {
-                            pstmt.setLong(index, (Long)obj);
-                        }
-                        index++;
-                    }
-                }
+                setPstmt(pstmt, param);
 
                 return pstmt;
             }
         });
     }
 
-    public int queryStrategyContext(StatementStrategy stateStrategy) throws SQLException {
+    // 값 반환 템플릿
+    private int queryStrategyContext(StatementStrategy stateStrategy) throws SQLException {
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -92,37 +82,150 @@ public class JdbcContext implements Context {
         return result;
     }
 
-    // Int 형 반환 시 DAO에서 호출할 메소드
     @Override
+    // int형 조회 전용 pstmt 전략 메소드
     public int executeQueryOneInt(final String sql, Object ...param) throws SQLException {        
         int result = queryStrategyContext(
             new StatementStrategy() {
                 public PreparedStatement makePreparedStatement(Connection connection) throws SQLException {
-                    int index = 1;
-    
                     PreparedStatement pstmt = connection.prepareStatement(sql);
                     
-                    if( param.length > 0 ) {
-                        for(Object obj : param) {
-                            if( obj instanceof Integer ) {
-                                pstmt.setInt(index, (Integer)obj);
-                            } else if( obj instanceof String ) {
-                                pstmt.setString(index, (String)obj);
-                            } else if( obj instanceof Double ) {
-                                pstmt.setDouble(index, (Double)obj);
-                            } else if( obj instanceof Float ) {
-                                pstmt.setFloat(index, (Float)obj);
-                            } else if( obj instanceof Long ) {
-                                pstmt.setLong(index, (Long)obj);
-                            }
-                            index++;
-                        }
-                    }
+                    setPstmt(pstmt, param);
+
                     return pstmt;
                 }
             });
         
         return result;
     }
+
+    // get 전략 및 반환 메소드
+    public <T extends Object> T executeQueryOneObject(final String sql, Class<T> type, Object ...param) throws SQLException {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        T obj = null;
+
+        try {
+            conn = dataSource.getConnection();
+
+            pstmt = conn.prepareStatement(sql);
+
+            setPstmt(pstmt, param);
+
+            rs = pstmt.executeQuery();
+
+            Class clazz = Class.forName(type.getName()); 
+
+            if( rs.next() ) {
+                
+                obj = (T)clazz.newInstance();
+
+                setResultSet(obj, clazz, rs);
+            }
+
+        } catch(Exception e) {
+            e.printStackTrace();
+        } finally {
+            if(rs != null) { try { rs.close(); } catch(Exception e) { e.printStackTrace(); } }
+            if(pstmt != null) { try { pstmt.close(); } catch(Exception e) { e.printStackTrace(); } }
+            if(conn != null) { try { conn.close(); } catch(Exception e) { e.printStackTrace(); } }
+        }
+        
+        return obj;
+    }
+
+    // selectAll 전략 및 반환 메소드
+    public <T extends Object> List<T> executeQueryList(final String sql, Class<T> type, Object ...param) throws SQLException {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        T obj = null;
+        List<T> list = new ArrayList<T>();
+
+        try {
+            conn = dataSource.getConnection();
+
+            pstmt = conn.prepareStatement(sql);
+
+            setPstmt(pstmt, param);
+
+            rs = pstmt.executeQuery();
+
+            Class clazz = Class.forName(type.getName()); 
+
+            while( rs.next() ) {
+
+                obj = (T)clazz.newInstance();
+
+                setResultSet(obj, clazz, rs);
+
+                list.add(obj);
+            }
+
+        } catch(Exception e) {
+            e.printStackTrace();
+        } finally {
+            if(rs != null) { try { rs.close(); } catch(Exception e) { e.printStackTrace(); } }
+            if(pstmt != null) { try { pstmt.close(); } catch(Exception e) { e.printStackTrace(); } }
+            if(conn != null) { try { conn.close(); } catch(Exception e) { e.printStackTrace(); } }
+        }
+        
+        return list;
+    }
+
+
+    // PSTMT 매개변수 정리 메소드
+    private void setPstmt(PreparedStatement pstmt, Object ...param) throws SQLException {
+        int index = 1;
+
+        if( param.length > 0 ) {
+            for(Object paramObj : param) {
+                if( paramObj instanceof Integer ) {
+                    pstmt.setInt(index, (Integer)paramObj);
+                } else if( paramObj instanceof String ) {
+                    pstmt.setString(index, (String)paramObj);
+                } else if( paramObj instanceof Double ) {
+                    pstmt.setDouble(index, (Double)paramObj);
+                } else if( paramObj instanceof Float ) {
+                    pstmt.setFloat(index, (Float)paramObj);
+                } else if( paramObj instanceof Long ) {
+                    pstmt.setLong(index, (Long)paramObj);
+                }
+                index++;
+            }
+        }
+    }
+
+    public <T extends Object> void setResultSet(T obj, Class clazz, ResultSet rs) throws SQLException {
+        Object inpVal = new Object();
+        String colName = "";
+
+        try {
+            for (Method method : clazz.getDeclaredMethods()) {
+                if( method.getName().startsWith("set") ) {
+                    colName = method.getName().substring(3).toLowerCase();
+        
+                    for (Class tmpClass : method.getParameterTypes()) {
+                        
+                        if( tmpClass.cast(tmpClass.newInstance()) instanceof String ) {
+                            inpVal = rs.getString(colName);
+                            break;
+                        } else if( tmpClass.cast(tmpClass.newInstance()) instanceof Integer ) {
+                            inpVal = new Integer(rs.getInt(colName));
+                            break;
+                        } else if(tmpClass.cast(tmpClass.newInstance()) instanceof Long) {
+                            inpVal = new Long(rs.getLong(colName));
+                            break;
+                        } 
+                    }
+                    method.invoke(obj, inpVal);
+                }
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
 
 }
