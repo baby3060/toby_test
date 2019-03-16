@@ -237,4 +237,12 @@
 </pre>
 
 #### 객체 반환 및 리스트 반환의 경우 따로, 콜백으로 안 나눈 이유가 ResultSet은 Connection과 PreparedStatement와 함께 닫히는 것이 좋기 때문. 
+#### 그리고, JdbcContext에 저장하려다 보니까, 정확한 반환 타입등(Integer, Concre Object, List)을 지정할 수가 없었다.
 ##### 리플렉션을 사용했다.
+
+### UserDao의 CRUD 시 스프링의 jdbcTemplate 사용
+#### jdbcContext에서 PreparedStatement를 생성한 후 반환한 전략 메소드(StatementStrategy의 makePreparedStatement)의 역할을 jdbcTemplate에서는 PreparedStatementCreate 인터페이스가 한다.
+#### 조회를 할 때는 그 결과를 가질 ResultSetExtractor<Type> 형태로 생성해준다.
+> 참고 사이트 : https://www.mkyong.com/spring/jdbctemplate-queryforint-is-deprecated/
+##### ResultSetExtractor : 단일 컬럼, RowMapper : 여러 컬럼을 매핑
+#### jdbcTemplate.queryForObject는 단일행이고, query는 기본이 List이다.
