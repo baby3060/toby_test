@@ -60,18 +60,18 @@ public class UserServiceTest {
 
             userService.upgradeLevels();
 
-            checkUser(users.get(0), Level.BASIC);
-            checkUser(users.get(1), Level.SILVER);
-            checkUser(users.get(2), Level.BASIC);
-            checkUser(users.get(3), Level.GOLD);
-            checkUser(users.get(4), Level.GOLD);
-            checkUser(users.get(5), Level.SILVER);
+            checkLevelUpgraded(users.get(0), false);
+            checkLevelUpgraded(users.get(1), false);
+            checkLevelUpgraded(users.get(2), false);
+            checkLevelUpgraded(users.get(3), false);
+            checkLevelUpgraded(users.get(4), true);
+            checkLevelUpgraded(users.get(5), true);
         } catch(Exception e) {
 
         }
     }
 
-    private void checkUser(User user, Level expectedLevel) {
+    private void checkLevelUpgraded(User user, boolean upgraded) {
         User userUpgrade =null;
         try {
             userUpgrade = userDao.get(user.getId());
@@ -79,7 +79,12 @@ public class UserServiceTest {
 
         }
         
-        assertThat(userUpgrade.getLevel(), is(expectedLevel));
+        if( upgraded ) {
+            assertThat(userUpgrade.getLevel(), is(user.getLevel().nextLevel()));
+        } else {
+            assertThat(userUpgrade.getLevel(), is(user.getLevel()));
+        }
+        
     }
 
     @Test
