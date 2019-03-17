@@ -22,11 +22,11 @@ public class App {
         try {
             userDao.deleteAll();
 
-            user = new User("1234", "1234", "12345");
+            user = new User("1234", "1234", "12345", Level.BASIC, 0, 0);
 
             userDao.add(user);
 
-            user = new User("didii1l", "김길동", "12345");
+            user = new User("didii1l", "김길동", "12345", Level.BASIC, 0, 0);
 
             userDao.add(user);
 

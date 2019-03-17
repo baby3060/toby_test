@@ -1,6 +1,6 @@
 package com.tobexam.dao;
 
-import com.tobexam.model.User;
+import com.tobexam.model.*;
 
 import java.util.*;
 import java.sql.SQLException;
@@ -29,6 +29,9 @@ public class UserDaoJdbc_Template implements UserDao {
             user.setId(rs.getString("id"));
             user.setName(rs.getString("name"));
             user.setPassword(rs.getString("password"));
+            user.setLevel(Level.valueOf(rs.getInt("level")));
+            user.setLogin(rs.getInt("login"));
+            user.setRecommend(rs.getInt("recommend"));
             return user;
         }
     };
@@ -54,11 +57,11 @@ public class UserDaoJdbc_Template implements UserDao {
     // User Add
     // 내부 익명클래스에서 사용하려면 외부 인자는 final이어야 함
     public void add(final User user) throws Exception {
-        this.jdbcTemplate.update("Insert Into USER(id, name, password) Values (?, ?, ?) ", user.getId(), user.getName(), user.getPassword());
+        this.jdbcTemplate.update("Insert Into USER(id, name, password, level, login, recommend) Values (?, ?, ?, ?, ?, ?) ", user.getId(), user.getName(), user.getPassword(), user.getLevel().getValue(), user.getLogin(), user.getRecommend());
     }
 
     public void update(final User user) throws Exception {
-        this.jdbcTemplate.update("Update USER set name = ?, password = ? Where id = ? ", user.getName(), user.getPassword(), user.getId());
+        this.jdbcTemplate.update("Update USER set name = ?, password = ?, level = ?, login = ?, recommend = ? Where id = ? ", user.getName(), user.getPassword(), user.getLevel().getValue(), user.getLogin(), user.getRecommend(), user.getId());
     }
 
     public void delete(final User user) throws Exception {

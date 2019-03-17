@@ -1,6 +1,6 @@
 package com.tobexam.dao;
 
-import com.tobexam.model.User;
+import com.tobexam.model.*;
 
 import java.util.*;
 import java.sql.SQLException;
@@ -25,7 +25,7 @@ public class UserDaoJdbc implements UserDao {
         PreparedStatement pstmt = null;
 
         try {
-            String sql = "Insert Into USER(id, name, password) Values (?, ?, ?) ";
+            String sql = "Insert Into USER(id, name, password, level, login, recommend) Values (?, ?, ?, ?, ?, ?) ";
 
             conn = dataSource.getConnection();
 
@@ -34,6 +34,11 @@ public class UserDaoJdbc implements UserDao {
             pstmt.setString(1, user.getId());
             pstmt.setString(2, user.getName());
             pstmt.setString(3, user.getPassword());
+            pstmt.setInt(4, user.getLevel().getValue());
+            pstmt.setInt(5, user.getLogin());
+            pstmt.setInt(6, user.getRecommend());
+
+            pstmt.executeUpdate();
 
         } catch(SQLException e ) {
             throw new Exception(e);
@@ -61,7 +66,7 @@ public class UserDaoJdbc implements UserDao {
         PreparedStatement pstmt = null;
 
         try {
-            String sql = "Update USER set name = ?, password = ? Where id = ? ";
+            String sql = "Update USER set name = ?, password = ?, level = ?, login = ?, recommend = ? Where id = ? ";
 
             conn = dataSource.getConnection();
 
@@ -69,7 +74,13 @@ public class UserDaoJdbc implements UserDao {
 
             pstmt.setString(1, user.getName());
             pstmt.setString(2, user.getPassword());
-            pstmt.setString(3, user.getId());
+            pstmt.setInt(3, user.getLevel().getValue());
+            pstmt.setInt(4, user.getLogin());
+            pstmt.setInt(5, user.getRecommend());
+
+            pstmt.setString(6, user.getId());
+
+            pstmt.executeUpdate();
 
         } catch(SQLException e ) {
             throw new Exception(e);
@@ -93,37 +104,7 @@ public class UserDaoJdbc implements UserDao {
     }
 
     public void delete(User user) throws Exception {        
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-
-        try {
-            String sql = "Delete From USER Where id = ? ";
-
-            conn = dataSource.getConnection();
-
-            pstmt = conn.prepareStatement(sql);
-
-            pstmt.setString(1, user.getId());
-
-        } catch(SQLException e ) {
-            throw new Exception(e);
-        } finally {
-            if(pstmt != null) {
-                try {
-                    pstmt.close();
-                } catch(Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-            if(conn != null) {
-                try {
-                    conn.close();
-                } catch(Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        this.delete(user.getId());
     }
 
     public User get(String id) throws EmptyResultDataAccessException, Exception {
@@ -132,7 +113,7 @@ public class UserDaoJdbc implements UserDao {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            String sql = "Select id, name, password From USER Where id = ? ";
+            String sql = "Select id, name, password, level, login, recommend From USER Where id = ? ";
 
             conn = dataSource.getConnection();
 
@@ -148,6 +129,9 @@ public class UserDaoJdbc implements UserDao {
                 user.setId(rs.getString("id"));
                 user.setName(rs.getString("name"));
                 user.setPassword(rs.getString("password"));
+                user.setLevel(Level.valueOf(rs.getInt("level")));
+                user.setLogin(rs.getInt("login"));
+                user.setRecommend(rs.getInt("recommend"));
             }
 
             if( user == null ) {
@@ -333,6 +317,7 @@ public class UserDaoJdbc implements UserDao {
 
             pstmt = conn.prepareStatement(sql);
 
+            pstmt.executeUpdate();
         } catch(SQLException e ) {
             throw new Exception(e);
         } finally {
@@ -364,7 +349,7 @@ public class UserDaoJdbc implements UserDao {
         ResultSet rs = null;
 
         try {
-            String sql = "Select id, name, password From USER ";
+            String sql = "Select id, name, password, level, login, recommend From USER ";
 
             conn = dataSource.getConnection();
 
@@ -378,7 +363,9 @@ public class UserDaoJdbc implements UserDao {
                 user.setId(rs.getString("id"));
                 user.setName(rs.getString("name"));
                 user.setPassword(rs.getString("password"));
-
+                user.setLevel(Level.valueOf(rs.getInt("level")));
+                user.setLogin(rs.getInt("login"));
+                user.setRecommend(rs.getInt("recommend"));
                 userList.add(user);
             }
 
