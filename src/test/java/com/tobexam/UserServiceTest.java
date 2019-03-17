@@ -1,0 +1,112 @@
+package com.tobexam;
+
+import org.junit.Test;
+import org.junit.Before;
+
+import java.sql.SQLException;
+
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
+
+import java.util.*;
+
+import com.tobexam.model.*;
+import com.tobexam.dao.*;
+import com.tobexam.service.*;
+import org.junit.runner.RunWith;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.support.GenericXmlApplicationContext;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.ContextConfiguration;
+
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations="/applicationContext.xml")
+public class UserServiceTest {
+    List<User> users;
+
+    private UserService userService;
+    private UserDao userDao;
+
+    @Before
+    public void setUp() {
+        ApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");
+
+        userService = context.getBean("userService", UserService.class);
+
+        users = new ArrayList<User>(Arrays.asList(
+            new User("1", "김길동", "비번1", Level.BASIC, 49, 0),
+            new User("2", "배길동", "비번2", Level.SILVER, 60, 29),
+            new User("3", "이길동", "비번3", Level.BASIC, 45, 0),
+            new User("4", "고길동", "비번4", Level.GOLD, 60, 33),
+            new User("5", "최길동", "비번5", Level.SILVER, 54, 30),
+            new User("6", "박길동", "비번6", Level.BASIC, 51, 0)
+        ));
+
+        userDao = context.getBean("userDao", UserDaoJdbc_Template.class);
+    }
+
+    @Test
+    public void upgradeLevels() {
+        try {
+            userService.deleteAll();
+
+            for(User user : users) {
+                userService.add(user);
+            }
+
+            userService.upgradeLevels();
+
+            checkUser(users.get(0), Level.BASIC);
+            checkUser(users.get(1), Level.SILVER);
+            checkUser(users.get(2), Level.BASIC);
+            checkUser(users.get(3), Level.GOLD);
+            checkUser(users.get(4), Level.GOLD);
+            checkUser(users.get(5), Level.SILVER);
+        } catch(Exception e) {
+
+        }
+    }
+
+    private void checkUser(User user, Level expectedLevel) {
+        User userUpgrade =null;
+        try {
+            userUpgrade = userDao.get(user.getId());
+        } catch(Exception e) {
+
+        }
+        
+        assertThat(userUpgrade.getLevel(), is(expectedLevel));
+    }
+
+    @Test
+    public void add() {
+        try {
+            userService.deleteAll();
+
+            User userWithLevel = users.get(0);
+            User userWithoutLevel = users.get(4);
+            userWithoutLevel.setLevel(null);
+
+            userService.add(userWithLevel);
+            userService.add(userWithoutLevel);
+
+            User userWithLevelRead = userDao.get(userWithLevel.getId());
+            User userWithOutLevelRead = userDao.get(userWithoutLevel.getId());
+
+
+            assertThat(userWithLevelRead.getLevel(), is(userWithLevel.getLevel()));
+            assertThat(userWithOutLevelRead.getLevel(), is(Level.BASIC));
+
+        } catch(Exception e) {
+
+        }
+    }
+
+    
+
+
+}

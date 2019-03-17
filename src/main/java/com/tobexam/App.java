@@ -1,5 +1,6 @@
 package com.tobexam;
 
+import com.tobexam.service.*;
 import com.tobexam.model.*;
 import com.tobexam.dao.*;
 
@@ -18,7 +19,7 @@ public class App {
         ApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");
 
         UserDao userDao = context.getBean("userDao", UserDaoJdbc_Template.class);
-        
+        UserService userService = context.getBean("userService", UserService.class);
         try {
             userDao.deleteAll();
 
@@ -30,22 +31,7 @@ public class App {
 
             userDao.add(user);
 
-            User oriUser = userDao.get("1234");
-
-            System.out.println(oriUser);
-            
-            oriUser.setName("테스트");
-            oriUser.setPassword("테스트 비번");
-
-            userDao.update(oriUser);
-
-            oriUser = userDao.get("1234");
-            
-            System.out.println(oriUser);
-
-            int count = userDao.countAll();
-
-            System.out.println(count);
+            userService.upgradeLevels();
 
         } catch(Exception e) {
             e.printStackTrace();
