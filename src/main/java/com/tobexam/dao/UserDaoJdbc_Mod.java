@@ -21,6 +21,10 @@ public class UserDaoJdbc_Mod implements UserDao {
     }
 
     public void setDataSource(DataSource dataSource) {
+        this.jdbcContext = new JdbcContext();
+
+        this.jdbcContext.setDataSource(dataSource);
+
         this.dataSource = dataSource;
     }
 
@@ -31,7 +35,7 @@ public class UserDaoJdbc_Mod implements UserDao {
     // User Add
     // 내부 익명클래스에서 사용하려면 외부 인자는 final이어야 함
     public void add(final User user) throws Exception {
-        this.jdbcContext.executeSql("Insert Into USER(id, name, password) Values (?, ?, ?, ?, ?, ?) ", user.getId(), user.getName(), user.getPassword(), user.getLevel().getValue(), user.getLogin(), user.getRecommend());
+        this.jdbcContext.executeSql("Insert Into USER(id, name, password, level, login, recommend) Values (?, ?, ?, ?, ?, ?) ", user.getId(), user.getName(), user.getPassword(), user.getLevel().getValue(), user.getLogin(), user.getRecommend());
     }
 
     public void update(final User user) throws Exception {

@@ -7,6 +7,8 @@ import java.sql.CallableStatement;
 import java.sql.SQLException;
 import java.sql.Connection;
 
+import com.tobexam.model.*;
+
 import java.util.*;
 import java.lang.reflect.*;
 
@@ -200,26 +202,64 @@ public class JdbcContext implements Context {
     public <T extends Object> void setResultSet(T obj, Class clazz, ResultSet rs) throws SQLException {
         Object inpVal = new Object();
         String colName = "";
-
+        boolean isCall = false;
+        String enumName = "";
+        int level = 0;
         try {
             for (Method method : clazz.getDeclaredMethods()) {
                 if( method.getName().startsWith("set") ) {
                     colName = method.getName().substring(3).toLowerCase();
-        
+                    
                     for (Class tmpClass : method.getParameterTypes()) {
-                        
-                        if( tmpClass.cast(tmpClass.newInstance()) instanceof String ) {
-                            inpVal = rs.getString(colName);
+                        isCall = true;
+
+                        // enum일 경우 => 답이 안 보인다.
+                        if( tmpClass.isEnum() ) {
+                            
+                            isCall = false;
+                            
+                            if( tmpClass.getSimpleName().equals("Level") ) {
+                                level = rs.getInt(colName);
+
+                                Level lev = Level.valueOf(level);
+
+                                method.invoke(obj, lev);
+                            } 
+
                             break;
-                        } else if( tmpClass.cast(tmpClass.newInstance()) instanceof Integer ) {
-                            inpVal = new Integer(rs.getInt(colName));
-                            break;
-                        } else if(tmpClass.cast(tmpClass.newInstance()) instanceof Long) {
-                            inpVal = new Long(rs.getLong(colName));
-                            break;
-                        } 
+                        } else {
+                            // 기본 타입이 아닐 경우
+                            if( tmpClass.getConstructors().length > 0 ) {
+                                if( tmpClass.cast(tmpClass.newInstance()) instanceof String ) {
+                                    inpVal = rs.getString(colName);
+                                    break;
+                                } else if( tmpClass.cast(tmpClass.newInstance()) instanceof Integer ) {
+                                    inpVal = new Integer(rs.getInt(colName));
+                                    break;
+                                } else if(tmpClass.cast(tmpClass.newInstance()) instanceof Long) {
+                                    inpVal = new Long(rs.getLong(colName));
+                                    break;
+                                } else if(tmpClass.cast(tmpClass.newInstance()) instanceof Double) {
+                                    inpVal = new Double(rs.getDouble(colName));
+                                    break;
+                                } 
+                            // 기본 타입일 경우
+                            } else {
+                                if(tmpClass.getSimpleName().equals("int")) {
+                                    inpVal = new Integer(rs.getInt(colName));
+                                } else if(tmpClass.getSimpleName().equals("long")) {
+                                    inpVal = new Long(rs.getLong(colName));
+                                } else if(tmpClass.getSimpleName().equals("double")) {
+                                    inpVal = new Double(rs.getDouble(colName));
+                                }
+                            }
+                        }
                     }
-                    method.invoke(obj, inpVal);
+
+                    if( isCall ) {
+                        method.invoke(obj, inpVal);
+                    }
+                    
                 }
             }
         } catch(Exception e) {
