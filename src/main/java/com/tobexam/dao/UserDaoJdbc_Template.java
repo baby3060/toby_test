@@ -20,7 +20,7 @@ import org.springframework.jdbc.core.RowMapper;
 /**
  * 스프링의 JdbcTemplate 사용
  */
-public class UserDao_Template {
+public class UserDaoJdbc_Template implements UserDao {
 
     // 받아오는 UserMapper 중복 제거
     private RowMapper<User> userMapper = new RowMapper<User>() {

@@ -12,7 +12,7 @@ import javax.sql.DataSource;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 
-public class UserDao_Mod {
+public class UserDaoJdbc_Mod implements UserDao {
     private Context jdbcContext;
     private DataSource dataSource;
 

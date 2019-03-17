@@ -17,7 +17,7 @@ public class App {
         
         ApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");
 
-        UserDao_Template userDao = context.getBean("userDao", UserDao_Template.class);
+        UserDao userDao = context.getBean("userDao", UserDaoJdbc_Template.class);
         
         try {
             userDao.deleteAll();

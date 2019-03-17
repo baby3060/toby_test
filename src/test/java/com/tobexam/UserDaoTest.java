@@ -25,7 +25,7 @@ import org.springframework.test.context.ContextConfiguration;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations="/applicationContext.xml")
 public class UserDaoTest {
-    private UserDao_Template userDao;
+    private UserDao userDao;
 
     User user1;
     User user2;
@@ -35,7 +35,7 @@ public class UserDaoTest {
     public void setUp() {
         ApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");
 
-        userDao = context.getBean("userDao", UserDao_Template.class);
+        userDao = context.getBean("userDao", UserDaoJdbc_Template.class);
 
         user1 = new User("1", "이길동", "12345");
         user2 = new User("2", "김길동", "12345");
