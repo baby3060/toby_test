@@ -23,7 +23,7 @@
         <property name="dataSource" ref="dataSource" />
     </bean>
 
-    <bean id="userDao" class="com.tobexam.dao.UserDaoJdbc_Mod">
+    <bean id="userDao" class="com.tobexam.dao.UserDaoJdbc_Template">
         <property name="dataSource" ref="dataSource" />
     </bean>
 </beans>

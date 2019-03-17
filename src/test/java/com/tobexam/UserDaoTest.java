@@ -37,9 +37,9 @@ public class UserDaoTest {
 
         userDao = context.getBean("userDao", UserDaoJdbc_Template.class);
 
-        user1 = new User("1", "이길동", "12345");
-        user2 = new User("2", "김길동", "12345");
-        user3 = new User("3", "최길동", "12345");
+        user1 = new User("1", "이길동", "12345", Level.BASIC, 1, 0);
+        user2 = new User("2", "김길동", "12345", Level.SILVER, 55, 10);
+        user3 = new User("3", "최길동", "12345", Level.GOLD, 100, 40);
 
     }
 
@@ -145,9 +145,31 @@ public class UserDaoTest {
         }
     }
 
+    @Test
+    public void update() {
+        try {
+            userDao.deleteAll();
+
+            userDao.add(user1); 
+
+            user1.setRecommend(1000);
+
+            userDao.update(user1);
+
+            User user1Update = userDao.get(user1.getId());
+
+            checkSameUser(user1, user1Update);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void checkSameUser(User target, User source) {
         assertThat(target.getId(), is(source.getId()));
         assertThat(target.getName(), is(source.getName()));
         assertThat(target.getPassword(), is(source.getPassword()));
+        assertThat(target.getLevel(), is(source.getLevel()));
+        assertThat(target.getLogin(), is(source.getLogin()));
+        assertThat(target.getRecommend(), is(source.getRecommend()));
     }
 }
