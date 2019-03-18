@@ -17,6 +17,8 @@ import org.junit.runner.RunWith;
 
 import javax.sql.DataSource;
 
+import org.springframework.transaction.PlatformTransactionManager;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -55,6 +57,9 @@ public class UserServiceTest {
     private UserDao userDao;
     @Autowired
     private DataSource dataSource;
+    @Autowired
+    private PlatformTransactionManager transactionManager;
+
 
     @Before
     public void setUp() {
@@ -126,7 +131,7 @@ public class UserServiceTest {
     public void upgradeAllOrNothing() throws Exception {
         UserService testUserService = new TestUserService(users.get(4).getId());
         testUserService.setUserDao(this.userDao);
-        testUserService.setDataSource(this.dataSource);
+        testUserService.setTransactionManager(this.transactionManager);
         userDao.deleteAll();
 
         for(User user : users) {

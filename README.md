@@ -246,3 +246,4 @@
 > 참고 사이트 : https://www.mkyong.com/spring/jdbctemplate-queryforint-is-deprecated/
 ##### ResultSetExtractor : 단일 컬럼, RowMapper : 여러 컬럼을 매핑
 #### jdbcTemplate.queryForObject는 단일행이고, query는 기본이 List이다.
+### 트랜잭션을 적용하거나 다중 DB, 특정 DB 매핑 기술(JPA, Hibernate, myBatis 등) 등을 쓸 때 UserService에서 Connection 및 특정 구체 객체에 의존하는 경우가 생긴다. 이렇게 서비스 객체에서 특정 기술을 사용하기 때문에 추상화가 필요하다(이걸 스프링이 제공해준다).
