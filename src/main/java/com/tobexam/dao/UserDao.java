@@ -9,12 +9,12 @@ import org.springframework.dao.EmptyResultDataAccessException;
 
 public interface UserDao {
     public void setDataSource(DataSource dataSource);
-    public void deleteAll() throws Exception;
-    public void add(User user) throws Exception;
-    public void update(User user) throws Exception;
-    public void delete(User user) throws Exception;
-    public User get(String id) throws EmptyResultDataAccessException, Exception;
-    public int count(String id) throws Exception;
-    public int countAll() throws Exception;
-    public List<User> selectAll() throws Exception;
+    public void deleteAll();
+    public void add(User user);
+    public void update(User user);
+    public void delete(User user);
+    public User get(String id);
+    public int count(String id);
+    public int countAll();
+    public List<User> selectAll();
 }

@@ -27,7 +27,8 @@ public class UserService {
                 }
             }
         } catch(Exception e) {
-
+            System.out.println("로깅 실시");
+            e.printStackTrace();
         }
         
     }
@@ -49,7 +50,8 @@ public class UserService {
         try {
             userDao.update(user);
         } catch(Exception e) {
-
+            System.out.println("로깅 실시");
+            e.printStackTrace();
         }
     }
 
@@ -68,6 +70,7 @@ public class UserService {
             }
             userDao.add(user);
         } catch(Exception e) {
+            System.out.println("로깅 실시");
             e.printStackTrace();
         }
     }

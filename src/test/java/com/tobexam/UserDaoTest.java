@@ -37,9 +37,9 @@ public class UserDaoTest {
 
         userDao = context.getBean("userDao", UserDaoJdbc_Template.class);
 
-        user1 = new User("1", "이길동", "12345", Level.BASIC, 1, 0);
-        user2 = new User("2", "김길동", "12345", Level.SILVER, 55, 10);
-        user3 = new User("3", "최길동", "12345", Level.GOLD, 100, 40);
+        user1 = new User("1", "이길동", "12345", Level.BASIC, 1, 0, "a@n.com");
+        user2 = new User("2", "김길동", "12345", Level.SILVER, 55, 10, "b@n.com");
+        user3 = new User("3", "최길동", "12345", Level.GOLD, 100, 40, "c@n.com");
 
     }
 
@@ -72,7 +72,7 @@ public class UserDaoTest {
 
     // 예외가 발생하면 테스트 성공
     @Test(expected=EmptyResultDataAccessException.class)
-    public void getUserFailure() throws Exception, SQLException {
+    public void getUserFailure() {
         
         // 예외 발생
         User user = userDao.get("unknown_id");
@@ -102,7 +102,7 @@ public class UserDaoTest {
 
             userDao.update(user);
 
-            user = userDao.get("1234");
+            user = userDao.get("1");
 
             assertThat(user.getName(), is("1234"));
             assertThat(user.getPassword(), is("12345"));
@@ -171,5 +171,6 @@ public class UserDaoTest {
         assertThat(target.getLevel(), is(source.getLevel()));
         assertThat(target.getLogin(), is(source.getLogin()));
         assertThat(target.getRecommend(), is(source.getRecommend()));
+        assertThat(target.getEmail(), is(source.getEmail()));
     }
 }

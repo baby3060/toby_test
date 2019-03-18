@@ -38,12 +38,12 @@ public class UserServiceTest {
         userService = context.getBean("userService", UserService.class);
 
         users = new ArrayList<User>(Arrays.asList(
-            new User("1", "김길동", "비번1", Level.BASIC, 49, 0),
-            new User("2", "배길동", "비번2", Level.SILVER, 60, 29),
-            new User("3", "이길동", "비번3", Level.BASIC, 45, 0),
-            new User("4", "고길동", "비번4", Level.GOLD, 60, 33),
-            new User("5", "최길동", "비번5", Level.SILVER, 54, 30),
-            new User("6", "박길동", "비번6", Level.BASIC, 51, 0)
+            new User("1", "김길동", "비번1", Level.BASIC, 49, 0, "a@n.com"),
+            new User("2", "배길동", "비번2", Level.SILVER, 60, 29, "b@n.com"),
+            new User("3", "이길동", "비번3", Level.BASIC, 45, 0, "c@n.com"),
+            new User("4", "고길동", "비번4", Level.GOLD, 60, 33, "d@n.com"),
+            new User("5", "최길동", "비번5", Level.SILVER, 54, 30, "e@n.com"),
+            new User("6", "박길동", "비번6", Level.BASIC, 51, 0, "f@n.com")
         ));
 
         userDao = context.getBean("userDao", UserDaoJdbc_Template.class);

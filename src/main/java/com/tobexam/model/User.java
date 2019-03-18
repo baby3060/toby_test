@@ -13,6 +13,7 @@ public class User {
 	@NonNull private Level level;
 	@NonNull private int login;
 	@NonNull private int recommend;
+	private String email;
 
     public User() { }
 
@@ -29,6 +30,16 @@ public class User {
 		this.level = level;
 		this.login = login;
 		this.recommend = recommend;
+	}
+
+	public User(String id, String name, String password, Level level, int login, int recommend, String email) {
+		this.id = id;
+		this.name = name;
+		this.password = password;
+		this.level = level;
+		this.login = login;
+		this.recommend = recommend;
+		this.email = email;
 	}
 
 	public void upgradeLevel() {

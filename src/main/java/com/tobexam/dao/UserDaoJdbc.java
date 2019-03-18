@@ -20,12 +20,12 @@ public class UserDaoJdbc implements UserDao {
     }
     
     // User Add
-    public void add(User user) throws Exception {        
+    public void add(User user) {        
         Connection conn = null;
         PreparedStatement pstmt = null;
 
         try {
-            String sql = "Insert Into USER(id, name, password, level, login, recommend) Values (?, ?, ?, ?, ?, ?) ";
+            String sql = "Insert Into USER(id, name, password, level, login, recommend, email) Values (?, ?, ?, ?, ?, ?, ?) ";
 
             conn = dataSource.getConnection();
 
@@ -37,11 +37,12 @@ public class UserDaoJdbc implements UserDao {
             pstmt.setInt(4, user.getLevel().getValue());
             pstmt.setInt(5, user.getLogin());
             pstmt.setInt(6, user.getRecommend());
+            pstmt.setString(7, user.getEmail());
 
             pstmt.executeUpdate();
 
         } catch(SQLException e ) {
-            throw new Exception(e);
+            e.printStackTrace();
         } finally {
             if(pstmt != null) {
                 try {
@@ -61,12 +62,12 @@ public class UserDaoJdbc implements UserDao {
         }
     }
 
-    public void update(User user) throws Exception {        
+    public void update(User user) {        
         Connection conn = null;
         PreparedStatement pstmt = null;
 
         try {
-            String sql = "Update USER set name = ?, password = ?, level = ?, login = ?, recommend = ? Where id = ? ";
+            String sql = "Update USER set name = ?, password = ?, level = ?, login = ?, recommend = ?, email = ? Where id = ? ";
 
             conn = dataSource.getConnection();
 
@@ -77,13 +78,14 @@ public class UserDaoJdbc implements UserDao {
             pstmt.setInt(3, user.getLevel().getValue());
             pstmt.setInt(4, user.getLogin());
             pstmt.setInt(5, user.getRecommend());
+            pstmt.setString(6, user.getEmail());
 
-            pstmt.setString(6, user.getId());
+            pstmt.setString(7, user.getId());
 
             pstmt.executeUpdate();
 
-        } catch(SQLException e ) {
-            throw new Exception(e);
+        } catch(Exception e ) {
+            e.printStackTrace();
         } finally {
             if(pstmt != null) {
                 try {
@@ -103,17 +105,17 @@ public class UserDaoJdbc implements UserDao {
         }
     }
 
-    public void delete(User user) throws Exception {        
+    public void delete(User user) {        
         this.delete(user.getId());
     }
 
-    public User get(String id) throws EmptyResultDataAccessException, Exception {
+    public User get(String id) {
         User user = null;
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            String sql = "Select id, name, password, level, login, recommend From USER Where id = ? ";
+            String sql = "Select id, name, password, level, login, recommend, email From USER Where id = ? ";
 
             conn = dataSource.getConnection();
 
@@ -132,13 +134,14 @@ public class UserDaoJdbc implements UserDao {
                 user.setLevel(Level.valueOf(rs.getInt("level")));
                 user.setLogin(rs.getInt("login"));
                 user.setRecommend(rs.getInt("recommend"));
+                user.setEmail(rs.getString("email"));
             }
 
             if( user == null ) {
                 throw new EmptyResultDataAccessException(1);
             }
         } catch(SQLException e ) {
-            throw new Exception(e);
+            e.printStackTrace();
         } finally {
             if(rs != null) {
                 try {
@@ -167,7 +170,7 @@ public class UserDaoJdbc implements UserDao {
         return user;
     }
 
-    public int countAll() throws Exception {
+    public int countAll() {
         int count = 0;
         Connection conn = null;
         PreparedStatement pstmt = null;
@@ -186,7 +189,7 @@ public class UserDaoJdbc implements UserDao {
                 count = rs.getInt("cnt");
             }
         } catch(SQLException e ) {
-            throw new Exception(e);
+            e.printStackTrace();
         } finally {
             if(rs != null) {
                 try {
@@ -216,7 +219,7 @@ public class UserDaoJdbc implements UserDao {
         return count;
     }
 
-    public int count(String id) throws Exception {
+    public int count(String id) {
         int count = 0;
         Connection conn = null;
         PreparedStatement pstmt = null;
@@ -236,7 +239,7 @@ public class UserDaoJdbc implements UserDao {
                 count = rs.getInt("cnt");
             }
         } catch(SQLException e ) {
-            throw new Exception(e);
+            e.printStackTrace();
         } finally {
             if(rs != null) {
                 try {
@@ -266,7 +269,7 @@ public class UserDaoJdbc implements UserDao {
         return count;
     }
 
-    public int delete(String id) throws Exception {
+    public int delete(String id) {
         int result = 0;
         Connection conn = null;
         PreparedStatement pstmt = null;
@@ -283,7 +286,7 @@ public class UserDaoJdbc implements UserDao {
             result = pstmt.executeUpdate();
 
         } catch(SQLException e ) {
-            throw new Exception(e);
+            e.printStackTrace();
         } finally {
             if(pstmt != null) {
                 try {
@@ -306,7 +309,7 @@ public class UserDaoJdbc implements UserDao {
         return result;
     }
 
-    public void deleteAll() throws Exception {        
+    public void deleteAll() {        
         Connection conn = null;
         PreparedStatement pstmt = null;
 
@@ -319,7 +322,7 @@ public class UserDaoJdbc implements UserDao {
 
             pstmt.executeUpdate();
         } catch(SQLException e ) {
-            throw new Exception(e);
+            e.printStackTrace();
         } finally {
             if(pstmt != null) {
                 try {
@@ -340,7 +343,7 @@ public class UserDaoJdbc implements UserDao {
         }
     }
 
-    public List<User> selectAll() throws Exception {
+    public List<User> selectAll() {
         List<User> userList = new ArrayList<User>();
         User user = null;
 
@@ -349,7 +352,7 @@ public class UserDaoJdbc implements UserDao {
         ResultSet rs = null;
 
         try {
-            String sql = "Select id, name, password, level, login, recommend From USER ";
+            String sql = "Select id, name, password, level, login, recommend, email From USER ";
 
             conn = dataSource.getConnection();
 
@@ -366,11 +369,12 @@ public class UserDaoJdbc implements UserDao {
                 user.setLevel(Level.valueOf(rs.getInt("level")));
                 user.setLogin(rs.getInt("login"));
                 user.setRecommend(rs.getInt("recommend"));
+                user.setEmail(rs.getString("email"));
                 userList.add(user);
             }
 
         } catch(SQLException e ) {
-            throw new Exception(e);
+            e.printStackTrace();
         } finally {
             if(rs != null) {
                 try {
