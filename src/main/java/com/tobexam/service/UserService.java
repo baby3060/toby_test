@@ -21,8 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class UserService {
     @Autowired
     private UserDao userDao;
-    @Autowired
-    private DataSource dataSource;
+    
     @Autowired
     private PlatformTransactionManager transactionManager;
 
@@ -31,10 +30,6 @@ public class UserService {
 
     public void setUserDao(UserDao userDao) {
         this.userDao = userDao;
-    }
-
-    public void setDataSource(DataSource dataSource) {
-        this.dataSource = dataSource;
     }
 
     public void setTransactionManager(PlatformTransactionManager transactionManager) {
