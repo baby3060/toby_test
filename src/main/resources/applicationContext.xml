@@ -35,9 +35,16 @@
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource" />
     </bean>
+    <!--
+        <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+     -->
+    <bean id="mailSender" class="com.tobexam.service.DummyMailSender">
+        <property name="host" value="mail.server.com" />
+    </bean>
 
     <bean id="userService" class="com.tobexam.service.UserService">
         <property name="userDao" ref="userDao" />
         <property name="transactionManager" ref="transactionManager" />
+        <property name="mailSender" ref="mailSender" />
     </bean>
 </beans>

@@ -7,6 +7,7 @@ import javax.sql.DataSource;
 
 import java.util.*;
 
+// 일반적인 java Mail API 사용
 import javax.mail.Message;
 import javax.mail.Session;
 import javax.mail.Transport;
@@ -15,6 +16,9 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.internet.AddressException;
+
+import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
 
 // 트랜잭션 경계설정 할 때 쓰이는 인터페이스(관리 인터페이스)
 import org.springframework.transaction.PlatformTransactionManager;
@@ -29,11 +33,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class UserService {
     
-    private static final String SMTP_HOST = "mail.host.com";
-    private static final String SEND_FROM = "fromemail@gmail.com";
-    private static final String USER_NAME = "webmaster";
-    private static final String USER_PASS = "webpass";
+    private MailSender mailSender;
 
+    public void setMailSender(MailSender mailSender) {
+        this.mailSender = mailSender;
+    }
 
     @Autowired
     private UserDao userDao;
@@ -114,41 +118,14 @@ public class UserService {
     }
 
     private void sendUpgradeEmail(User user) {
-        if( !user.getEmail().equals("") ) {
-            Properties props = new Properties();
-            props.put("mail.smtp.auth", "true");
-            props.put("mail.smtp.host", SMTP_HOST);
-            props.put("mail.smtp.starttls.enable", "true");
-            props.put("mail.smtp.port", "25");
-            
-            Session mailSession = Session.getInstance(props,
-                    new javax.mail.Authenticator() {
-                        protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication(USER_NAME, USER_PASS);
-                }
-            });
+        if( !user.getEmail().equals("")) {
+            SimpleMailMessage mailMessage = new SimpleMailMessage();
+            mailMessage.setTo(user.getEmail());
+            mailMessage.setFrom("owner@ow.com");
+            mailMessage.setSubject("Upgrade 안내");
+            mailMessage.setText("사용자님의 등급이 " + user.getLevel().name());
 
-            try {
-                MimeMessage message = new MimeMessage(mailSession);
-                
-                message.setFrom(new InternetAddress(SEND_FROM));
-                
-                message.setRecipients(Message.RecipientType.TO,
-                        InternetAddress.parse(user.getEmail()));
-                
-                message.setSubject("Upgrade 안내");
-                
-                message.setText("사용자님의 등급이 " + user.getLevel().name() + "로 업그레이드 되었습니다.");
-
-                // Send message
-                Transport.send(message);
-
-            } catch(AddressException addrE) {
-
-            } catch(MessagingException msgE) {
-
-            } 
-
+            this.mailSender.send(mailMessage);
         } else {
             System.out.println("로깅 남김 - 사용자의 메일(" + user.getId() + ")이 없습니다.");
         }

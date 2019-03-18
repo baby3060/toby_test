@@ -17,6 +17,8 @@ import org.junit.runner.RunWith;
 
 import javax.sql.DataSource;
 
+import org.springframework.mail.MailSender;
+
 import org.springframework.transaction.PlatformTransactionManager;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +49,9 @@ public class UserServiceTest {
         }
     }
     
+    @Autowired
+    private MailSender mailSender;
+
     static class TestUserServiceException extends RuntimeException { }
 
     List<User> users;
@@ -77,27 +82,22 @@ public class UserServiceTest {
 
     @Test
     public void upgradeLevels() {
+        userService.deleteAll();
+        for(User user : users) {
+            userService.add(user);
+        }
+        try {
+            userService.upgradeLevels();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
         
-            userService.deleteAll();
-
-            for(User user : users) {
-                userService.add(user);
-            }
-
-            try {
-                userService.upgradeLevels();
-            } catch(Exception e) {
-                e.printStackTrace();
-            }
-            
-
-            checkLevelUpgraded(users.get(0), false);
-            checkLevelUpgraded(users.get(1), true);
-            checkLevelUpgraded(users.get(2), false);
-            checkLevelUpgraded(users.get(3), false);
-            checkLevelUpgraded(users.get(4), true);
-            checkLevelUpgraded(users.get(5), true);
-        
+        checkLevelUpgraded(users.get(0), false);
+        checkLevelUpgraded(users.get(1), true);
+        checkLevelUpgraded(users.get(2), false);
+        checkLevelUpgraded(users.get(3), false);
+        checkLevelUpgraded(users.get(4), true);
+        checkLevelUpgraded(users.get(5), true);
     }
 
     private void checkLevelUpgraded(User user, boolean upgraded) {
@@ -132,6 +132,7 @@ public class UserServiceTest {
         UserService testUserService = new TestUserService(users.get(4).getId());
         testUserService.setUserDao(this.userDao);
         testUserService.setTransactionManager(this.transactionManager);
+        testUserService.setMailSender(this.mailSender);
         userDao.deleteAll();
 
         for(User user : users) {
@@ -146,6 +147,5 @@ public class UserServiceTest {
             e.printStackTrace();
         }
 
-        checkLevelUpgraded(users.get(1), false);
     }
 }
