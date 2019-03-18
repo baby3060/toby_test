@@ -10,7 +10,7 @@ public class User {
     @NonNull private String id;
     @NonNull private String name;
     @NonNull private String password;
-	@NonNull private Level level;
+	private Level level;
 	@NonNull private int login;
 	@NonNull private int recommend;
 	private String email;
