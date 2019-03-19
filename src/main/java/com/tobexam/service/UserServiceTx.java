@@ -33,12 +33,17 @@ public class UserServiceTx implements UserService {
     }
 
     public void upgradeLevels() {
+        TransactionStatus status = this.transactionManager.getTransaction(new DefaultTransactionDefinition());
+        
         try {
             this.userService.upgradeLevels();
-        } catch(Exception e) {
-            e.printStackTrace();
+            
+            this.transactionManager.commit(status);
+        } catch(RuntimeException e) {
+            
+            this.transactionManager.rollback(status);
+            throw e;
         }
-        
     }
 
     public void deleteAll() {
