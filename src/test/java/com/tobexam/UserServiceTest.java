@@ -74,6 +74,10 @@ public class UserServiceTest {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private UserServiceImpl userServiceImpl;
+
     @Autowired
     private UserDao userDao;
     @Autowired
@@ -98,16 +102,16 @@ public class UserServiceTest {
 
     @Test
     public void upgradeLevels() {
-        userService.deleteAll();
+        userServiceImpl.deleteAll();
         for(User user : users) {
-            userService.add(user);
+            userServiceImpl.add(user);
         }
         
         MockMailSender mockMailSender = new MockMailSender();
-        userService.setMailSender(mockMailSender);
+        userServiceImpl.setMailSender(mockMailSender);
 
         try {
-            userService.upgradeLevels();
+            userServiceImpl.upgradeLevels();
         } catch(Exception e) {
             e.printStackTrace();
         }
@@ -140,39 +144,21 @@ public class UserServiceTest {
 
     @Test
     public void add() {
-        
         userService.deleteAll();
+
         User userWithLevel = users.get(0);
         User userWithoutLevel = users.get(4);
         userWithoutLevel.setLevel(null);
+        
         userService.add(userWithLevel);
         userService.add(userWithoutLevel);
+        
         User userWithLevelRead = userDao.get(userWithLevel.getId());
         User userWithOutLevelRead = userDao.get(userWithoutLevel.getId());
+        
         assertThat(userWithLevelRead.getLevel(), is(userWithLevel.getLevel()));
         assertThat(userWithOutLevelRead.getLevel(), is(Level.BASIC));
-
     }
 
-    @Test
-    public void upgradeAllOrNothing() throws Exception {
-        UserService testUserService = new TestUserService(users.get(4).getId());
-        testUserService.setUserDao(this.userDao);
-        testUserService.setTransactionManager(this.transactionManager);
-        testUserService.setMailSender(this.mailSender);
-        userDao.deleteAll();
-
-        for(User user : users) {
-            userDao.add(user);
-        }
-
-        try {
-            testUserService.upgradeLevels();
-
-            fail("TestUserServiceException expected");
-        } catch(TestUserServiceException e) {
-            e.printStackTrace();
-        }
-
-    }
+    
 }
