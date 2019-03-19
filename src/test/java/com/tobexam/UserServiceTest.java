@@ -17,7 +17,6 @@ import org.junit.runner.RunWith;
 
 import javax.sql.DataSource;
 
-import org.springframework.mail.MailSender;
 
 import org.springframework.transaction.PlatformTransactionManager;
 
@@ -29,11 +28,15 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.ContextConfiguration;
 
+import org.springframework.mail.MailSender;
+import org.springframework.mail.MailException;
+import org.springframework.mail.SimpleMailMessage;
+
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations="/applicationContext.xml")
 public class UserServiceTest {
-    static class TestUserService extends UserService {
+    static class TestUserService extends UserServiceImpl {
         private String id;
     
         private TestUserService(String id) {
@@ -49,6 +52,19 @@ public class UserServiceTest {
         }
     }
     
+    static class MockMailSender implements MailSender {
+        private List<String> requests = new ArrayList<String>();
+    
+        public List<String> getRequests() {
+            return requests;
+        }
+    
+        public void send(SimpleMailMessage mailMessage) throws MailException {
+            requests.add(mailMessage.getTo()[0]);
+        }
+        public void send(SimpleMailMessage[] mailMessageArr) throws MailException {}
+    }
+
     @Autowired
     private MailSender mailSender;
 
@@ -86,6 +102,10 @@ public class UserServiceTest {
         for(User user : users) {
             userService.add(user);
         }
+        
+        MockMailSender mockMailSender = new MockMailSender();
+        userService.setMailSender(mockMailSender);
+
         try {
             userService.upgradeLevels();
         } catch(Exception e) {
@@ -98,6 +118,13 @@ public class UserServiceTest {
         checkLevelUpgraded(users.get(3), false);
         checkLevelUpgraded(users.get(4), true);
         checkLevelUpgraded(users.get(5), true);
+
+        List<String> request = mockMailSender.getRequests();
+
+        assertThat(request.size(), is(3));
+        assertThat(request.get(0), is(users.get(1).getEmail()));
+        assertThat(request.get(1), is(users.get(4).getEmail()));
+        assertThat(request.get(2), is(users.get(5).getEmail()));
     }
 
     private void checkLevelUpgraded(User user, boolean upgraded) {
