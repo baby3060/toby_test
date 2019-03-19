@@ -251,3 +251,7 @@
 
 ### 트랜잭션을 적용하거나 다중 DB, 특정 DB 매핑 기술(JPA, Hibernate, myBatis 등) 등을 쓸 때 UserService에서 Connection 및 특정 구체 객체에 의존하는 경우가 생긴다. 이렇게 서비스 객체에서 특정 기술을 사용하기 때문에 추상화가 필요하다(이걸 스프링이 제공해준다).
 ### 자바 Mail Api를 스프링에서 사용하기 쉽게 추상화한 SimpleMailMessage(MimeMessage), JavaMailSenderImpl(MailSender)
+
+<hr />
+
+### 테스트 시 테스트 내역은 좁히는 것이 좋다(데이터베이스, 네트워크 같은 것들은 제외하고 로직만 테스트하는 것이 좋다).

@@ -8,6 +8,10 @@ import java.sql.SQLException;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
+import static org.mockito.Mockito.*;
+
+import org.mockito.ArgumentCaptor;
+
 import java.util.*;
 
 import com.tobexam.model.*;
@@ -16,6 +20,7 @@ import com.tobexam.service.*;
 import org.junit.runner.RunWith;
 
 import javax.sql.DataSource;
+
 
 
 import org.springframework.transaction.PlatformTransactionManager;
@@ -31,7 +36,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
-
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations="/applicationContext.xml")
@@ -207,6 +211,42 @@ public class UserServiceTest {
         
         assertThat(userWithLevelRead.getLevel(), is(userWithLevel.getLevel()));
         assertThat(userWithOutLevelRead.getLevel(), is(Level.BASIC));
+    }
+
+    @Test
+    public void mockUpgradeLevels() throws Exception {
+        UserServiceImpl userServiceImpl = new UserServiceImpl();
+
+        UserDao mockUserDao = mock(UserDao.class);
+        // Return값 설정
+        when(mockUserDao.selectAll()).thenReturn(this.users);
+        userServiceImpl.setUserDao(mockUserDao);
+
+        MailSender mockMailSender = mock(MailSender.class);
+        userServiceImpl.setMailSender(mockMailSender);
+
+        userServiceImpl.upgradeLevels();
+
+        // hamcrest의 is와 겹치므로, 아래와 같이 지정
+        verify(mockUserDao, times(3)).update(org.mockito.Mockito.any(User.class));
+        verify(mockUserDao, times(3)).update(org.mockito.Mockito.any(User.class));
+        verify(mockUserDao, times(3)).update(org.mockito.Mockito.any(User.class));
+
+        verify(mockUserDao).update(users.get(1));
+        assertThat(users.get(1).getLevel(), is(Level.GOLD));
+
+        verify(mockUserDao).update(users.get(4));
+        assertThat(users.get(4).getLevel(), is(Level.GOLD));
+
+        verify(mockUserDao).update(users.get(5));
+        assertThat(users.get(5).getLevel(), is(Level.SILVER));
+
+        ArgumentCaptor<SimpleMailMessage> mailMessageArg = ArgumentCaptor.forClass(SimpleMailMessage.class);
+        verify(mockMailSender, times(3)).send(mailMessageArg.capture());
+        List<SimpleMailMessage> mailMessages = mailMessageArg.getAllValues();
+        assertThat(mailMessages.get(0).getTo()[0], is(users.get(1).getEmail()));
+        assertThat(mailMessages.get(1).getTo()[0], is(users.get(4).getEmail()));
+        assertThat(mailMessages.get(2).getTo()[0], is(users.get(5).getEmail()));
     }
 
     
