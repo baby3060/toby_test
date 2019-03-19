@@ -3,6 +3,7 @@ package com.tobexam;
 import org.junit.Test;
 import org.junit.Before;
 
+import java.lang.reflect.Proxy;
 import java.sql.SQLException;
 
 import static org.hamcrest.CoreMatchers.*;
@@ -143,6 +144,38 @@ public class UserServiceTest {
         txUserService.setTransactionManager(transactionManager);
         txUserService.setUserService(testUserService);
 
+        userDao.deleteAll();
+
+        for(User user : users) {
+            userDao.add(user);
+        }
+
+        try {
+            txUserService.upgradeLevels();
+            fail("TestUserServiceException expected");
+        } catch(TestUserServiceException e) {
+            
+        }
+
+        checkLevelUpgraded(users.get(1), false);
+    }
+
+    @Test
+    public void upgradeAllOrNothingDynamicProxy() throws Exception {
+        TestUserService testUserService = new TestUserService(users.get(4).getId());
+        testUserService.setUserDao(userDao);
+        testUserService.setMailSender(mailSender);
+
+        TransactionHandler txHandler = new TransactionHandler();
+        txHandler.setTarget(testUserService);
+        txHandler.setTransactionManager(transactionManager);
+        txHandler.setPattern("upgradeLevels");
+
+        UserService txUserService = (UserService)Proxy.newProxyInstance(
+            getClass().getClassLoader(),
+            new Class[] { UserService.class },
+            txHandler
+        );
         userDao.deleteAll();
 
         for(User user : users) {
