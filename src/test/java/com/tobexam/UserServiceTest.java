@@ -65,6 +65,35 @@ public class UserServiceTest {
         public void send(SimpleMailMessage[] mailMessageArr) throws MailException {}
     }
 
+    static class MockUserDao implements UserDao {
+        private List<User> users;
+        private List<User> updated = new ArrayList<User>();
+
+        private MockUserDao(List<User> users) {
+            this.users = users;
+        }
+
+        public List<User> getUpdated() {
+            return updated;
+        }
+
+        public List<User> selectAll() {
+            return this.users;
+        }
+
+        public void update(User user) {
+            updated.add(user);
+        }
+
+        public void setDataSource(DataSource dataSource) { throw new UnsupportedOperationException(); } 
+        public void add(User user) { throw new UnsupportedOperationException(); }
+        public void deleteAll() { throw new UnsupportedOperationException(); }
+        public User get(String id) { throw new UnsupportedOperationException(); }
+        public void delete(User user) { throw new UnsupportedOperationException(); }
+        public int count(String id) { throw new UnsupportedOperationException(); }
+        public int countAll() { throw new UnsupportedOperationException(); }
+    }
+
     @Autowired
     private MailSender mailSender;
 
@@ -127,34 +156,28 @@ public class UserServiceTest {
     }
 
     @Test
-    public void upgradeLevels() {
-        userServiceImpl.deleteAll();
-        for(User user : users) {
-            userServiceImpl.add(user);
-        }
-        
+    // 이 테스트에서는 데이터를 DB에 넣을 필요없이, List만을 가지고 테스트할 수 있다.
+    public void upgradeLevels() throws Exception {
+        UserServiceImpl userServiceImpl = new UserServiceImpl();
+
+        MockUserDao mockUserDao = new MockUserDao(this.users);
+        userServiceImpl.setUserDao(mockUserDao);
+
         MockMailSender mockMailSender = new MockMailSender();
         userServiceImpl.setMailSender(mockMailSender);
 
-        try {
-            userServiceImpl.upgradeLevels();
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
-        
-        checkLevelUpgraded(users.get(0), false);
-        checkLevelUpgraded(users.get(1), true);
-        checkLevelUpgraded(users.get(2), false);
-        checkLevelUpgraded(users.get(3), false);
-        checkLevelUpgraded(users.get(4), true);
-        checkLevelUpgraded(users.get(5), true);
+        userServiceImpl.upgradeLevels();
 
-        List<String> request = mockMailSender.getRequests();
+        List<User> updated = mockUserDao.getUpdated();
+        assertThat(updated.size(), is(3));
+        checkUserAndLevel(updated.get(0), "2", Level.GOLD);
+        checkUserAndLevel(updated.get(1), "5", Level.GOLD);
+        checkUserAndLevel(updated.get(2), "6", Level.SILVER);
+    }
 
-        assertThat(request.size(), is(3));
-        assertThat(request.get(0), is(users.get(1).getEmail()));
-        assertThat(request.get(1), is(users.get(4).getEmail()));
-        assertThat(request.get(2), is(users.get(5).getEmail()));
+    private void checkUserAndLevel(User updated, String expectedId, Level expectedLevel) {
+        assertThat(updated.getId(), is(expectedId));
+        assertThat(updated.getLevel(), is(expectedLevel));
     }
 
     private void checkLevelUpgraded(User user, boolean upgraded) {
