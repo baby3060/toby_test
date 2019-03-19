@@ -38,7 +38,6 @@ public class TransactionHandler implements InvocationHandler {
         TransactionStatus status = this.transactionManager.getTransaction(new DefaultTransactionDefinition());
 
         try {
-            // 해당 메소드 호출
             Object ret = method.invoke(target, args);
             this.transactionManager.commit(status);
             return ret;
