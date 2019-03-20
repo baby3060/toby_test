@@ -290,3 +290,4 @@
 > Bean 대상이 아닐 경우, 컨테이너에게 넘겨받은 Bean 객체 그대로를 돌려준다.
 ##### 이렇게 하면, 일일이 ProxyFactoryBean을 등록하지 않아도 된다.
 ##### DefaultAdvisorAutoProxyCreator을 적용할 경우, Bean 설정 파일에서 ProxyFactoryBean 부분을 빼야 한다.
+### PointCut은 표현식을 이용하여 지정할 수 있다.
