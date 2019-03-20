@@ -45,13 +45,9 @@ public class UserServiceTest {
     @Autowired
     ApplicationContext context;
 
-    static class TestUserService extends UserServiceImpl {
-        private String id;
+    static class TestUserServiceImpl extends UserServiceImpl {
+        private String id = "5";
     
-        private TestUserService(String id) {
-            this.id = id;
-        }
-        
         protected void upgradeLevel(User user) {
             if(user.getId().equals(this.id)) {
                 throw new TestUserServiceException();
@@ -114,6 +110,9 @@ public class UserServiceTest {
     private UserService userService;
 
     @Autowired
+    private UserService testUserService;
+
+    @Autowired
     private UserDao userDao;
     @Autowired
     private DataSource dataSource;
@@ -136,16 +135,7 @@ public class UserServiceTest {
     }
 
     @Test
-    @DirtiesContext
     public void upgradeAllOrNothing() throws Exception {
-        TestUserService testUserService = new TestUserService(users.get(4).getId());
-        testUserService.setUserDao(userDao);
-        testUserService.setMailSender(mailSender);
-
-        ProxyFactoryBean txProxyFactoryBean = context.getBean("&userService", ProxyFactoryBean.class);
-        txProxyFactoryBean.setTarget(testUserService);
-        UserService txUserService = (UserService)txProxyFactoryBean.getObject();
-
         userDao.deleteAll();
 
         for(User user : users) {
@@ -153,7 +143,7 @@ public class UserServiceTest {
         }
 
         try {
-            txUserService.upgradeLevels();
+            testUserService.upgradeLevels();
             fail("TestUserServiceException expected");
         } catch(TestUserServiceException e) {
             
@@ -164,10 +154,7 @@ public class UserServiceTest {
 
     @Test
     public void upgradeAllOrNothingDynamicProxy() throws Exception {
-        TestUserService testUserService = new TestUserService(users.get(4).getId());
-        testUserService.setUserDao(userDao);
-        testUserService.setMailSender(mailSender);
-
+        
         TransactionHandler txHandler = new TransactionHandler();
         txHandler.setTarget(testUserService);
         txHandler.setTransactionManager(transactionManager);

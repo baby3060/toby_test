@@ -61,6 +61,11 @@
         <property name="pointcut" ref="transactionPointcut" />
     </bean>
 
+    <bean id="testUserService"
+        class="com.tobexam.UserServiceTest$TestUserServiceImpl"
+        parent="userService"
+    />
+
     <!-- DefaultAdvisorAutoProxyCreator는 Bean으로만 등록하면 되므로, id는 필요 없음 -->
     <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" />
 </beans>
