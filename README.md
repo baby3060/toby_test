@@ -268,3 +268,25 @@
 ### 스프링에는 프록시를 만들고, 이 프록시를 Bean으로 만들어주는 ProxyFactoryBean이라는 게 존재한다. 
 ### ProxyFactoryBean이 생성하는 프록시에 추가할 부가기능은 MethodInterceptor 인터페이스를 구현한다.
 #### MethodInterceptor에는 InvocationHandler처럼 클래스가 딱 하나 밖에 없으며, InvocationHandler와는 달리 타깃을 넘기지 않아도 된다.
+
+<hr />
+
+### 추가 기능은 같지만 target이 다른 비슷한 내용의 ProxyFactoryBean 설정이 중복되는 경우가 있다.
+
+<pre>
+<code>
+&lt;bean id="userService" class="org.springframework.aop.framework.ProxyFactoryBean"&gt;
+        &lt;property name="target" ref="[이 부분]" /&gt;
+        ...
+    &lt;/property&gt;
+&lt;/bean>
+</code>
+</pre>
+
+#### 이럴 때는 BeanPostProcessor 인터페이스를 사용하여 중복을 없앨 수 있다(변하지 않는 부분 중 핵심 부분을 제외하고, 대부분 확장 가능한 확장 포인트).
+##### DefaultAdvisorAutoProxyCreator를 단순히 Bean으로만 등록해놓으면 된다. Bean으로 등록되어 있을 경우 자동으로, 스프링에서 만든 Bean을 후처리 프로세서로 보낸다.
+> 후처리 프로세서에서 넘겨진 Bean이 프록시 적용 대상일 경우 현재 Bean에 대한 프록시를 만들게 하고, 어드바이저를 연결해준다.
+>> 프록시가 생성되면, 원래 컨테이너가 전달해준 Bean 객체 대신 프록시 오브젝트를 컨테이너에게 돌려준다.
+> Bean 대상이 아닐 경우, 컨테이너에게 넘겨받은 Bean 객체 그대로를 돌려준다.
+##### 이렇게 하면, 일일이 ProxyFactoryBean을 등록하지 않아도 된다.
+##### DefaultAdvisorAutoProxyCreator을 적용할 경우, Bean 설정 파일에서 ProxyFactoryBean 부분을 빼야 한다.

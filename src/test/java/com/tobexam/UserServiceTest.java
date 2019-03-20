@@ -114,9 +114,6 @@ public class UserServiceTest {
     private UserService userService;
 
     @Autowired
-    private UserServiceImpl userServiceImpl;
-
-    @Autowired
     private UserDao userDao;
     @Autowired
     private DataSource dataSource;
