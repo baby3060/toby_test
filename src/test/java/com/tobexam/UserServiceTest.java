@@ -22,6 +22,8 @@ import org.junit.runner.RunWith;
 
 import javax.sql.DataSource;
 
+import org.springframework.aop.framework.ProxyFactoryBean;
+
 import org.springframework.transaction.PlatformTransactionManager;
 
 import org.springframework.test.annotation.DirtiesContext;
@@ -143,7 +145,7 @@ public class UserServiceTest {
         testUserService.setUserDao(userDao);
         testUserService.setMailSender(mailSender);
 
-        TxProxyFactoryBean txProxyFactoryBean = context.getBean("&userService", TxProxyFactoryBean.class);
+        ProxyFactoryBean txProxyFactoryBean = context.getBean("&userService", ProxyFactoryBean.class);
         txProxyFactoryBean.setTarget(testUserService);
         UserService txUserService = (UserService)txProxyFactoryBean.getObject();
 
