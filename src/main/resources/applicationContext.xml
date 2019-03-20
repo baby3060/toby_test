@@ -42,9 +42,11 @@
         <property name="host" value="mail.server.com" />
     </bean>
 
-    <bean id="userService" class="com.tobexam.service.UserServiceTx">
-        <property name="userService" ref="userServiceImpl" />
+    <bean id="userService" class="com.tobexam.service.TxProxyFactoryBean">
+        <property name="target" ref="userServiceImpl" />
         <property name="transactionManager" ref="transactionManager" />
+        <property name="pattern" value="upgradeLevels" />
+        <property name="serviceInterface" value="com.tobexam.service.UserService" />
     </bean>
 
     <bean id="userServiceImpl" class="com.tobexam.service.UserServiceImpl">

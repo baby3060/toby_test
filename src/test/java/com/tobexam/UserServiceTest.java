@@ -22,10 +22,9 @@ import org.junit.runner.RunWith;
 
 import javax.sql.DataSource;
 
-
-
 import org.springframework.transaction.PlatformTransactionManager;
 
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -41,6 +40,9 @@ import org.springframework.mail.SimpleMailMessage;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations="/applicationContext.xml")
 public class UserServiceTest {
+    @Autowired
+    ApplicationContext context;
+
     static class TestUserService extends UserServiceImpl {
         private String id;
     
@@ -135,14 +137,15 @@ public class UserServiceTest {
     }
 
     @Test
+    @DirtiesContext
     public void upgradeAllOrNothing() throws Exception {
         TestUserService testUserService = new TestUserService(users.get(4).getId());
         testUserService.setUserDao(userDao);
         testUserService.setMailSender(mailSender);
 
-        UserServiceTx txUserService = new UserServiceTx();
-        txUserService.setTransactionManager(transactionManager);
-        txUserService.setUserService(testUserService);
+        TxProxyFactoryBean txProxyFactoryBean = context.getBean("&userService", TxProxyFactoryBean.class);
+        txProxyFactoryBean.setTarget(testUserService);
+        UserService txUserService = (UserService)txProxyFactoryBean.getObject();
 
         userDao.deleteAll();
 
@@ -171,6 +174,7 @@ public class UserServiceTest {
         txHandler.setTransactionManager(transactionManager);
         txHandler.setPattern("upgradeLevels");
 
+        // 다이내믹 프록시 생성
         UserService txUserService = (UserService)Proxy.newProxyInstance(
             getClass().getClassLoader(),
             new Class[] { UserService.class },
