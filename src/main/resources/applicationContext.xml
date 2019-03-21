@@ -64,7 +64,7 @@
     <bean id="transactionAdvice" class="com.tobexam.service.TransactionAdvice">
         <property name="transactionManager" ref="transactionManager" />
     </bean>
-
+    
     <!-- AOP 네임스페이스 사용 안 할 시 -->
     <!-- 
     

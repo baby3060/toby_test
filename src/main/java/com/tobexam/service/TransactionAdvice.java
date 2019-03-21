@@ -1,8 +1,11 @@
 package com.tobexam.service;
 
+import java.lang.reflect.Method;
+
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 
+import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
@@ -18,7 +21,19 @@ public class TransactionAdvice implements MethodInterceptor {
     }
 
     public Object invoke(MethodInvocation invocation)  throws Throwable {
-        TransactionStatus status = this.transactionManager.getTransaction(new DefaultTransactionDefinition());
+        DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
+
+        Method method = invocation.getMethod();
+
+        String methodName = method.getName();
+
+        if( methodName.startsWith("upgrades") ) {
+            
+        } else {
+            definition.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+        }
+
+        TransactionStatus status = this.transactionManager.getTransaction(definition);
 
         try {
             Object ret = invocation.proceed();

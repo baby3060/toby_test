@@ -291,3 +291,13 @@
 ##### 이렇게 하면, 일일이 ProxyFactoryBean을 등록하지 않아도 된다.
 ##### DefaultAdvisorAutoProxyCreator을 적용할 경우, Bean 설정 파일에서 ProxyFactoryBean 부분을 빼야 한다.
 ### PointCut은 표현식을 이용하여 지정할 수 있다.
+#### PointCut이 내장된 어드바이저를 사용하면 더 보기 쉬운 대신에, 공통으로 사용할 포인트컷이 없고, 외장되었을 경우 내장된 경우보다 보기가 더 깔끔하지 않다.
+
+> DefaultTransactionDefinition
+>> 트랜잭션을 어떻게 동작시킬것인가에 대한 정의를 내리는 클래스
+>>> 전파 : 이미 진행 중인 트랜잭션이 있을 경우 그 트랜잭션과 합칠지 아니면 전혀 별개의 트랜잭션을 새로 생성할지에 대한 옵션(같은 메소드에서 다른 jdbcTemplate.update 메소드 호출)
+>>> 격리수준 : 멀티 트랜잭션
+>>> 제한시간 : 수행하는 제한시간
+>>> 읽기전용 : 읽기전용으로 할 경우 수정이나 삽입, 삭제 못함
+
+### 메소드별로 각기 다른 트랜잭션을 속성을 정의하려면, 현재 Advice(TransactionAdvice)의 기능을 확장해야 한다(invoke의 매개변수 MethodInvocation에 정의된 getMethod 변수를 이용하여 그 메소드의 이름에 따라 각기 다른 속성을 사용하는 방식으로 하면 됨). 스프링에서 제공하는 TransactionInterceptor를 사용하면 해결.
