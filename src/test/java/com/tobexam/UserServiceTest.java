@@ -26,12 +26,15 @@ import org.springframework.aop.framework.ProxyFactoryBean;
 
 import org.springframework.transaction.PlatformTransactionManager;
 
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.dao.TransientDataAccessResourceException;
+
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
-import org.springframework.dao.EmptyResultDataAccessException;
+
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.ContextConfiguration;
 
@@ -55,6 +58,14 @@ public class UserServiceTest {
                 super.upgradeLevel(user);
             }
         }
+
+        public List<User> selectAll() {
+            for( User user : super.selectAll() ) {
+                super.update(user);
+            }
+            return null;
+        }
+
     }
     
     static class MockMailSender implements MailSender {
@@ -270,6 +281,12 @@ public class UserServiceTest {
         assertThat(mailMessages.get(0).getTo()[0], is(users.get(1).getEmail()));
         assertThat(mailMessages.get(1).getTo()[0], is(users.get(4).getEmail()));
         assertThat(mailMessages.get(2).getTo()[0], is(users.get(5).getEmail()));
+    }
+
+    @Test(expected=TransientDataAccessResourceException.class)
+    // 읽기 전용에 데이터 업데이트 시 TransientDataAccessResourceException 발생
+    public void readonlyTest() {
+        testUserService.selectAll();
     }
 
     
