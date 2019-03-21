@@ -3,12 +3,16 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
        xsi:schemaLocation="http://www.springframework.org/schema/beans 
                            http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
                            http://www.springframework.org/schema/context
                            http://www.springframework.org/schema/context/spring-context-4.0.xsd
                            http://www.springframework.org/schema/aop
-                           http://www.springframework.org/schema/aop/spring-aop-4.0.xsd">
+                           http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+                           http://www.springframework.org/schema/tx
+                           http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+                           ">
 
     <bean id="xmlParsing" class="com.tobexam.common.XMLParsingConfig">
         <property name="fileName" value="mysql_conn.xml" />
@@ -68,6 +72,23 @@
     </bean>
     -->
 
+
+    
+    <!-- tx 네임스페이스 사용 -->
+    <!-- TransactionInterceptor Bean 등록됨 -->
+    <!-- 전파 속성 propagation이 REQUIRED라면 생략 가능 -->
+    <tx:advice id="transactionAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <tx:method name="get*" propagation="REQUIRED" read-only="true" timeout="30" />
+            <tx:method name="count*" propagation="REQUIRED" read-only="true" timeout="30" />
+            <tx:method name="select*" propagation="REQUIRED" read-only="true" timeout="30" />
+            <tx:method name="upgrades*" propagation="REQUIRES_NEW" isolation="SERIALIZABLE" />
+            <tx:method name="*" />
+        </tx:attributes>
+    </tx:advice>
+
+    <!-- PROPAGATION_REQUIRED : 기존 트랜잭션에 합승, PROPAGATION_REQUIRES_NEW : 신규 트랜잭션 생성, ISOLATION_SERIALIZABLE : 동시 작업에 영향 받지 않게 완벽하게 고립된 트랜잭션 -->
+    <!-- 
     <bean id="transactionAdvice" 
         class="org.springframework.transaction.interceptor.TransactionInterceptor">
         <property name="transactionManager" ref="transactionManager" />
@@ -81,6 +102,10 @@
             </props>
         </property> 
     </bean>
+    -->
+
+
+
 
     <!-- AOP 네임스페이스 사용 안 할 시 -->
     <!-- 
