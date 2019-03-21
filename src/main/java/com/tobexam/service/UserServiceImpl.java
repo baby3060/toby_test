@@ -61,6 +61,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    // Test를 위하여 protected로 지정
     protected void upgradeLevel(User user) {
         user.upgradeLevel();
         userDao.update(user);
@@ -99,6 +100,29 @@ public class UserServiceImpl implements UserService {
         } else {
             System.out.println("로깅 남김 - 사용자의 메일(" + user.getId() + ")이 없습니다.");
         }
+    }
+
+    public void update(User user) {
+        this.userDao.update(user);
+    }
+    public void delete(User user) {
+        this.userDao.delete(user);
+    }
+    
+    public User get(String id) {
+        return this.userDao.get(id);
+    }
+    
+    public int count(String id) {
+        return this.userDao.count(id);
+    }
+    
+    public int countAll() {
+        return this.userDao.countAll();
+    }
+
+    public List<User> selectAll() {
+        return this.userDao.selectAll();
     }
 
 }

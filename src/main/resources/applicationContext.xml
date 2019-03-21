@@ -62,7 +62,11 @@
         <aop:advisor advice-ref="transactionAdvice" pointcut-ref="transactionPointcut" />
         -->
         <!-- 포인트컷 내장 어드바이저 -->
+        <!-- 
         <aop:advisor advice-ref="transactionAdvice"  pointcut="execution(* *..*ServiceImpl.upgrade*(..))" />
+        -->
+        <!-- Bean이름을 가지고 어드바이스 적용 -->
+        <aop:advisor advice-ref="transactionAdvice" pointcut="bean(*Service)" />
     </aop:config>
 
     <!-- 이전 -->
@@ -77,12 +81,13 @@
     <!-- tx 네임스페이스 사용 -->
     <!-- TransactionInterceptor Bean 등록됨 -->
     <!-- 전파 속성 propagation이 REQUIRED라면 생략 가능 -->
-    <tx:advice id="transactionAdvice" transaction-manager="transactionManager">
+    <!-- TransactionManager의 아이디가 transactionManager일 경우 transaction-manager 속성을 생략할 수 있다. -->
+    <tx:advice id="transactionAdvice">
         <tx:attributes>
             <tx:method name="get*" propagation="REQUIRED" read-only="true" timeout="30" />
             <tx:method name="count*" propagation="REQUIRED" read-only="true" timeout="30" />
             <tx:method name="select*" propagation="REQUIRED" read-only="true" timeout="30" />
-            <tx:method name="upgrades*" propagation="REQUIRES_NEW" isolation="SERIALIZABLE" />
+            <tx:method name="upgrade*" propagation="REQUIRES_NEW" isolation="SERIALIZABLE" />
             <tx:method name="*" />
         </tx:attributes>
     </tx:advice>
@@ -97,7 +102,7 @@
                 <prop key="get*">PROPAGATION_REQUIRED,readOnly,timeout_30</prop>
                 <prop key="count*">PROPAGATION_REQUIRED,readOnly,timeout_30</prop>
                 <prop key="select*">PROPAGATION_REQUIRED,readOnly,timeout_30</prop>
-                <prop key="upgrades*">PROPAGATION_REQUIRES_NEW,ISOLATION_SERIALIZABLE</prop>
+                <prop key="upgrade*">PROPAGATION_REQUIRES_NEW,ISOLATION_SERIALIZABLE</prop>
                 <prop key="*">PROPAGATION_REQUIRED</prop>
             </props>
         </property> 
