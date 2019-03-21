@@ -22,6 +22,9 @@ import org.springframework.mail.SimpleMailMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.transaction.annotation.Transactional;
+
+@Transactional
 public class UserServiceImpl implements UserService {
     
     private MailSender mailSender;
@@ -109,18 +112,22 @@ public class UserServiceImpl implements UserService {
         this.userDao.delete(user);
     }
     
+    @Transactional(readOnly=true)
     public User get(String id) {
         return this.userDao.get(id);
     }
     
+    @Transactional(readOnly=true)
     public int count(String id) {
         return this.userDao.count(id);
     }
     
+    @Transactional(readOnly=true)
     public int countAll() {
         return this.userDao.countAll();
     }
 
+    @Transactional(readOnly=true)
     public List<User> selectAll() {
         return this.userDao.selectAll();
     }

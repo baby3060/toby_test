@@ -14,6 +14,8 @@
                            http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
                            ">
 
+    <tx:annotation-driven />
+
     <bean id="xmlParsing" class="com.tobexam.common.XMLParsingConfig">
         <property name="fileName" value="mysql_conn.xml" />
     </bean>
@@ -75,8 +77,6 @@
         <property name="transactionManager" ref="transactionManager" />
     </bean>
     -->
-
-
     
     <!-- tx 네임스페이스 사용 -->
     <!-- TransactionInterceptor Bean 등록됨 -->
@@ -108,9 +108,6 @@
         </property> 
     </bean>
     -->
-
-
-
 
     <!-- AOP 네임스페이스 사용 안 할 시 -->
     <!-- 

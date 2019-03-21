@@ -301,3 +301,47 @@
 >>> 읽기전용 : 읽기전용으로 할 경우 수정이나 삽입, 삭제 못함
 
 ### 메소드별로 각기 다른 트랜잭션을 속성을 정의하려면, 현재 Advice(TransactionAdvice)의 기능을 확장해야 한다(invoke의 매개변수 MethodInvocation에 정의된 getMethod 변수를 이용하여 그 메소드의 이름에 따라 각기 다른 속성을 사용하는 방식으로 하면 됨). 스프링에서 제공하는 TransactionInterceptor를 사용하면 해결.
+
+### Transaction 적용 시 어드바이저 만드는 방법도 있지만, 애노테이션을 이용하여 만드는 방법도 존재(@Transactional). 우선시 되는 순서가 존재한다.
+
+1. 타겟 클래스(Transaction을 적용할 메소드가 존재하는 클래스 : Service 클래스)
+2. 대상 메소드(타겟 클래스에 선언된)
+3. 인터페이스(타겟 클래스가 구현한 인터페이스)
+4. 인터페이스의 추상 메소드
+
+> 설정 파일에 다음과 같이 작성해주면 @Transactional 애노테이션을 사용할 수 있다.
+<code>
+&lt;tx:annotation-driven /&gt;
+</code>
+
+>> 설정 파일의
+<pre>
+<code>
+    &lt;aop:config&gt;
+        &lt;aop:advisor advice-ref="transactionAdvice" pointcut="bean(*Service)" /&gt;
+    &lt;/aop:config&gt;
+
+    &lt;tx:advice id="transactionAdvice"&gt;
+        &lt;tx:attributes&gt;
+            &lt;tx:method name="get*" propagation="REQUIRED" read-only="true" timeout="30" /&gt;
+            &lt;tx:method name="count*" propagation="REQUIRED" read-only="true" timeout="30" /&gt;
+            &lt;tx:method name="select*" propagation="REQUIRED" read-only="true" timeout="30" /&gt;
+            &lt;tx:method name="upgrade*" propagation="REQUIRES_NEW" isolation="SERIALIZABLE" /&gt;
+            &lt;tx:method name="*" /&gt;
+        &lt;/tx:attributes&gt;
+    &lt;/tx:advice&gt;
+
+</code>
+</pre>
+
+>> 부분을 주석처리하고, 타겟 클래스에 
+<code>
+    @Transactional 
+</code>
+애노테이션을 달고, get, count, select로 시작하는 메소드에
+<code>
+    @Transactional(readOnly)
+</code>
+를 달아도 기존 테스트(트랜잭션)와 똑같은 결과를 내보였다.
+
+#### 애노테이션인 간단하게 하고, 보다 정밀한 건 xml에서 설정하는게 보다 정교한 것 같다.
