@@ -61,10 +61,27 @@
         <aop:advisor advice-ref="transactionAdvice"  pointcut="execution(* *..*ServiceImpl.upgrade*(..))" />
     </aop:config>
 
+    <!-- 이전 -->
+    <!-- 
     <bean id="transactionAdvice" class="com.tobexam.service.TransactionAdvice">
         <property name="transactionManager" ref="transactionManager" />
     </bean>
-    
+    -->
+
+    <bean id="transactionAdvice" 
+        class="org.springframework.transaction.interceptor.TransactionInterceptor">
+        <property name="transactionManager" ref="transactionManager" />
+        <property name="transactionAttributes">
+            <props>
+                <prop key="get*">PROPAGATION_REQUIRED,readOnly,timeout_30</prop>
+                <prop key="count*">PROPAGATION_REQUIRED,readOnly,timeout_30</prop>
+                <prop key="select*">PROPAGATION_REQUIRED,readOnly,timeout_30</prop>
+                <prop key="upgrades*">PROPAGATION_REQUIRES_NEW,ISOLATION_SERIALIZABLE</prop>
+                <prop key="*">PROPAGATION_REQUIRED</prop>
+            </props>
+        </property> 
+    </bean>
+
     <!-- AOP 네임스페이스 사용 안 할 시 -->
     <!-- 
     
