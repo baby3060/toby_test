@@ -132,4 +132,13 @@ public class UserServiceImpl implements UserService {
         return this.userDao.selectAll();
     }
 
+    public void updateRecommend(User user, String recommendId) {
+        this.userDao.add(user);
+
+        User recommendUser = this.userDao.get(recommendId);
+        recommendUser.setRecommend(recommendUser.getRecommend() + 1);
+
+        this.userDao.update(recommendUser);
+    }
+
 }

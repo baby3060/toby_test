@@ -19,4 +19,6 @@ public interface UserService {
     public int count(String id);
     public int countAll();
     public List<User> selectAll();
+
+    public void updateRecommend(User user, String recommendId);
 }
