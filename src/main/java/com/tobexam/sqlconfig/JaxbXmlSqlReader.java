@@ -8,7 +8,10 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 
 public class JaxbXmlSqlReader implements SqlReader {
-    private String sqlmapFile;
+    // 기본 SQL map 파일(Default 대비)
+    private static final String DEFAULT_SQLMAP_FILE = "sqlmap.xml";
+
+    private String sqlmapFile = DEFAULT_SQLMAP_FILE;
 
     public void setSqlmapFile(String sqlmapFile) {
         this.sqlmapFile = sqlmapFile;

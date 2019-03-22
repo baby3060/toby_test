@@ -41,11 +41,15 @@
         <property name="sqlService" ref="sqlService" />
     </bean>
 
+    <!-- 
     <bean id="sqlService" class="com.tobexam.sqlconfig.BaseSqlService" >
         <property name="sqlReader" ref="sqlReader" />
         <property name="sqlRegistry" ref="sqlRegistry" />
     </bean>
+    -->
 
+    <bean id="sqlService" class="com.tobexam.sqlconfig.DefaultSqlService"  />
+    
     <bean id="sqlReader" class="com.tobexam.sqlconfig.JaxbXmlSqlReader" >
         <property name="sqlmapFile" value="sqlmap.xml" />
     </bean>
