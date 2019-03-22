@@ -38,7 +38,6 @@ public class UserDaoTest {
         user1 = new User("1", "이길동", "12345", Level.BASIC, 1, 0, "a@n.com");
         user2 = new User("2", "김길동", "12345", Level.SILVER, 55, 10, "b@n.com");
         user3 = new User("3", "최길동", "12345", Level.GOLD, 100, 40, "c@n.com");
-
     }
 
     @Test

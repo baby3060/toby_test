@@ -25,6 +25,49 @@ import org.springframework.dao.DataAccessException;
  */
 public class UserDaoJdbc_Template implements UserDao {
 
+    private String sqlAdd;
+    private String sqlDeleteAll;
+    private String sqlUpdate;
+    private String sqlDelete;
+    private String sqlGet;
+    private String sqlCount;
+    private String sqlCountAll;
+    private String sqlSelectAll;
+
+    public void setSqlAdd(String sqlAdd) {
+        this.sqlAdd = sqlAdd;
+    }
+
+    public void setSqlDeleteAll(String sqlDeleteAll) {
+        this.sqlDeleteAll = sqlDeleteAll;
+    }
+
+    public void setSqlUpdate(String sqlUpdate) {
+        this.sqlUpdate = sqlUpdate;
+    }
+
+    public void setSqlDelete(String sqlDelete) {
+        this.sqlDelete = sqlDelete;
+    }
+
+
+    public void setSqlGet(String sqlGet) {
+        this.sqlGet = sqlGet;
+    }
+
+    public void setSqlCount(String sqlCount) {
+        this.sqlCount = sqlCount;
+    }
+
+    public void setSqlCountAll(String sqlCountAll) {
+        this.sqlCountAll = sqlCountAll;
+    }
+
+    public void setSqlSelectAll(String sqlSelectAll) {
+        this.sqlSelectAll = sqlSelectAll;
+    }
+
+
     // 받아오는 UserMapper 중복 제거
     private RowMapper<User> userMapper = new RowMapper<User>() {
         public User mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -55,21 +98,21 @@ public class UserDaoJdbc_Template implements UserDao {
         });
         */
         // 내장 콜백 사용
-        this.jdbcTemplate.update("Delete From USER");
+        this.jdbcTemplate.update(this.sqlDeleteAll);
     }
 
     // User Add
     // 내부 익명클래스에서 사용하려면 외부 인자는 final이어야 함
     public void add(final User user) throws DuplicateKeyException {
-        this.jdbcTemplate.update("Insert Into USER(id, name, password, level, login, recommend, email) Values (?, ?, ?, ?, ?, ?, ?) ", user.getId(), user.getName(), user.getPassword(), user.getLevel().getValue(), user.getLogin(), user.getRecommend(), user.getEmail());
+        this.jdbcTemplate.update(this.sqlAdd, user.getId(), user.getName(), user.getPassword(), user.getLevel().getValue(), user.getLogin(), user.getRecommend(), user.getEmail());
     }
 
     public void update(final User user) {
-        this.jdbcTemplate.update("Update USER set name = ?, password = ?, level = ?, login = ?, recommend = ?, email = ? Where id = ? ", user.getName(), user.getPassword(), user.getLevel().getValue(), user.getLogin(), user.getRecommend(), user.getEmail(), user.getId());
+        this.jdbcTemplate.update(this.sqlUpdate, user.getName(), user.getPassword(), user.getLevel().getValue(), user.getLogin(), user.getRecommend(), user.getEmail(), user.getId());
     }
 
     public void delete(final User user) {
-        this.jdbcTemplate.update("Delete From USER Where id = ?", user.getId());
+        this.jdbcTemplate.update(this.sqlDelete, user.getId());
     }
 
     public User get(String id) {
@@ -77,7 +120,7 @@ public class UserDaoJdbc_Template implements UserDao {
         // 바로 아래 Count와의 차이는 Integer.class인지 RowMapper<User>인가의 차이
         // RowMapper에서는 rs.next를 호출할 필요가 없다.
         // 행이 없을 경우 자동으로 EmptyResultDataAccessException을 던져준다.
-        return this.jdbcTemplate.queryForObject("Select * From USER Where id = ? "
+        return this.jdbcTemplate.queryForObject(this.sqlGet
             , new Object[] { id }
             , this.userMapper
         );
@@ -85,7 +128,7 @@ public class UserDaoJdbc_Template implements UserDao {
 
     public int count(String id) {
         // 원래는 queryForInt가 있었으나 deprecated되서 아래와 같은 방법으로
-        return this.jdbcTemplate.queryForObject("Select Count(*) As cnt From USER Where id = ? ", new Object[] { id }, Integer.class);
+        return this.jdbcTemplate.queryForObject(this.sqlCount, new Object[] { id }, Integer.class);
     }
 
     public int countAll() {
@@ -103,12 +146,12 @@ public class UserDaoJdbc_Template implements UserDao {
         });
         */
         // 원래는 queryForInt가 있었으나 deprecated되서 아래와 같은 방법으로
-        return this.jdbcTemplate.queryForObject("Select Count(*) As cnt From USER", new Object[] { }, Integer.class);
+        return this.jdbcTemplate.queryForObject(this.sqlCountAll, new Object[] { }, Integer.class);
     }
 
     public List<User> selectAll() {
         // query는 기본 리턴 타입이 List이다.
-        return this.jdbcTemplate.query("Select * From USER Order By id "
+        return this.jdbcTemplate.query(this.sqlSelectAll
             , new Object[] {  }
             , this.userMapper
             

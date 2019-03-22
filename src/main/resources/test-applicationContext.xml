@@ -36,6 +36,14 @@
 
     <bean id="userDao" class="com.tobexam.dao.UserDaoJdbc_Template">
         <property name="dataSource" ref="dataSource" />
+        <property name="sqlAdd" value="Insert Into USER(id, name, password, level, login, recommend, email) Values (?, ?, ?, ?, ?, ?, ?)" />
+        <property name="sqlDeleteAll" value="Delete From USER" />
+        <property name="sqlUpdate" value="Update USER set name = ?, password = ?, level = ?, login = ?, recommend = ?, email = ? Where id = ?" />
+        <property name="sqlDelete" value="Delete From USER Where id = ?" />
+        <property name="sqlGet" value="Select * From USER Where id = ?" />
+        <property name="sqlCount" value="Select Count(*) As cnt From USER Where id = ?" />
+        <property name="sqlCountAll" value="Select Count(*) As cnt From USER" />
+        <property name="sqlSelectAll" value="Select * From USER Order By id" />
     </bean>
 
     <!-- DataSource가 아닌 JTA(글로벌 트랜잭션)을 사용할 경우  
