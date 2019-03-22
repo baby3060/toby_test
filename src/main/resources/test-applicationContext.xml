@@ -36,14 +36,21 @@
         <property name="dataSource" ref="dataSource" />
     </bean>
 
-    <bean id="userDao" class="com.tobexam.dao.UserDaoJdbc_Template">
+    <bean id="userDao" class="com.tobexam.dao.UserDaoJdbc_Template" >
         <property name="dataSource" ref="dataSource" />
         <property name="sqlService" ref="sqlService" />
     </bean>
 
-    <bean id="sqlService" class="com.tobexam.sqlconfig.XmlSqlService">
+    <bean id="sqlService" class="com.tobexam.sqlconfig.BaseSqlService" >
+        <property name="sqlReader" ref="sqlReader" />
+        <property name="sqlRegistry" ref="sqlRegistry" />
+    </bean>
+
+    <bean id="sqlReader" class="com.tobexam.sqlconfig.JaxbXmlSqlReader" >
         <property name="sqlmapFile" value="sqlmap.xml" />
     </bean>
+
+    <bean id="sqlRegistry" class="com.tobexam.sqlconfig.HashMapSqlRegistry" />
 
     <!-- DataSource가 아닌 JTA(글로벌 트랜잭션)을 사용할 경우  
         org.springframework.jdbc.datasource.DataSourceTransactionManager를 org.springframework.transaction.jta.JtaTransactionManager로 수정한다.
