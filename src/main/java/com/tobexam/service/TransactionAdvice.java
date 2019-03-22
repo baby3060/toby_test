@@ -11,7 +11,9 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 /**
- * 부가기능 부여해주는 클래스(어드바이스)
+ * 부가기능 부여해주는 클래스(어드바이스2)
+ * MethodInvocation에 타깃의 정보가 포함되어 있어서 넘길필요 없다.
+ * @deprecated
  */
 public class TransactionAdvice implements MethodInterceptor {
     private PlatformTransactionManager transactionManager;

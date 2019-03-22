@@ -5,7 +5,11 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
-
+/**
+ * 부가기능 부여해주는 클래스(어드바이스1)
+ * InvocationHandler를 구현하여서, invoke 메소드에 target 객체를 넘긴다.
+ * @deprecated
+ */
 public class TransactionHandler implements InvocationHandler {
     // 부가기능(트랜잭션 경계 설정)을 추가할 객체
     private Object target;

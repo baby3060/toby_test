@@ -6,6 +6,11 @@ import org.springframework.beans.factory.FactoryBean;
 
 import org.springframework.transaction.PlatformTransactionManager;
 
+/**
+ * 프록시를 Bean으로 등록하기 위해 FactoryBean을 구현(1)
+ * 이것보다 더 나은 버전은 ProxyFactoryBean을 사용
+ * @deprecated
+ */
 public class TxProxyFactoryBean implements FactoryBean {
 
     // TransactionHandler를 생성할 때 필요
