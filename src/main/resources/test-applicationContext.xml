@@ -39,7 +39,9 @@
         <property name="sqlService" ref="sqlService" />
     </bean>
 
-    <bean id="sqlService" class="com.tobexam.sqlconfig.XmlSqlService" />
+    <bean id="sqlService" class="com.tobexam.sqlconfig.XmlSqlService">
+        <property name="sqlmapFile" value="sqlmap.xml" />
+    </bean>
 
     <!-- DataSource가 아닌 JTA(글로벌 트랜잭션)을 사용할 경우  
         org.springframework.jdbc.datasource.DataSourceTransactionManager를 org.springframework.transaction.jta.JtaTransactionManager로 수정한다.

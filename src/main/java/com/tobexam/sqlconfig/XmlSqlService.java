@@ -15,7 +15,20 @@ import javax.xml.bind.Unmarshaller;
 public class XmlSqlService implements SqlService {
     private Map<String, String> sqlMap = new HashMap<String, String>();
 
+    private String sqlmapFile;
+
+    public void setSqlmapFile(String sqlmapFile) {
+        this.sqlmapFile = sqlmapFile;
+    }
+
     public XmlSqlService() {
+        initSql();
+    }
+
+    /**
+     * SQL 초기화
+     */
+    public void initSql() {
         String contextPath = Sqlmap.class.getPackage().getName();
         try {
             JAXBContext context = JAXBContext.newInstance(contextPath);
@@ -25,7 +38,7 @@ public class XmlSqlService implements SqlService {
             // XML을 자바 객체로 전환하기 위한 언마샬러
             Unmarshaller unmarshaller = context.createUnmarshaller();
 
-            Sqlmap sqlmap = (Sqlmap)unmarshaller.unmarshal(classLoader.getResourceAsStream("sqlmap.xml"));
+            Sqlmap sqlmap = (Sqlmap)unmarshaller.unmarshal(classLoader.getResourceAsStream(sqlmapFile));
 
             for( SqlType sql : sqlmap.getSql() ) {
                 sqlMap.put(sql.getKey(), sql.getValue());
