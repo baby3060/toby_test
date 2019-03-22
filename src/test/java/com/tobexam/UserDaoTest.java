@@ -23,7 +23,7 @@ import org.springframework.test.context.ContextConfiguration;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations="/applicationContext.xml")
+@ContextConfiguration(locations="/test-applicationContext.xml")
 public class UserDaoTest {
     private UserDao userDao;
 

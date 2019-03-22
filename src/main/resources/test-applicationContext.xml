@@ -38,10 +38,15 @@
         <property name="dataSource" ref="dataSource" />
     </bean>
 
+    <!-- DataSource가 아닌 JTA(글로벌 트랜잭션)을 사용할 경우  
+        org.springframework.jdbc.datasource.DataSourceTransactionManager를 org.springframework.transaction.jta.JtaTransactionManager로 수정한다.
+    -->
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource" />
     </bean>
-   
+    <!--
+        <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+     -->
     <bean id="mailSender" class="com.tobexam.service.DummyMailSender">
         <property name="host" value="mail.server.com" />
     </bean>
@@ -52,9 +57,31 @@
     </bean>
 
     <aop:config>
+        <!-- 포인트컷 외장 어드바이저 -->
+        <!-- 
+        <aop:pointcut id="transactionPointcut" 
+                    expression="execution(* *..*ServiceImpl.upgrade*(..))" />
+        <aop:advisor advice-ref="transactionAdvice" pointcut-ref="transactionPointcut" />
+        -->
+        <!-- 포인트컷 내장 어드바이저 -->
+        <!-- 
+        <aop:advisor advice-ref="transactionAdvice"  pointcut="execution(* *..*ServiceImpl.upgrade*(..))" />
+        -->
+        <!-- Bean이름을 가지고 어드바이스 적용 -->
         <aop:advisor advice-ref="transactionAdvice" pointcut="bean(*Service)" />
     </aop:config>
 
+    <!-- 이전 -->
+    <!-- 
+    <bean id="transactionAdvice" class="com.tobexam.service.TransactionAdvice">
+        <property name="transactionManager" ref="transactionManager" />
+    </bean>
+    -->
+    
+    <!-- tx 네임스페이스 사용 -->
+    <!-- TransactionInterceptor Bean 등록됨 -->
+    <!-- 전파 속성 propagation이 REQUIRED라면 생략 가능 -->
+    <!-- TransactionManager의 아이디가 transactionManager일 경우 transaction-manager 속성을 생략할 수 있다. -->
     <tx:advice id="transactionAdvice">
         <tx:attributes>
             <tx:method name="get*" propagation="REQUIRED" read-only="true" timeout="30" />
@@ -65,7 +92,41 @@
         </tx:attributes>
     </tx:advice>
 
+    <!-- PROPAGATION_REQUIRED : 기존 트랜잭션에 합승, PROPAGATION_REQUIRES_NEW : 신규 트랜잭션 생성, ISOLATION_SERIALIZABLE : 동시 작업에 영향 받지 않게 완벽하게 고립된 트랜잭션 -->
+    <!-- 
+    <bean id="transactionAdvice" 
+        class="org.springframework.transaction.interceptor.TransactionInterceptor">
+        <property name="transactionManager" ref="transactionManager" />
+        <property name="transactionAttributes">
+            <props>
+                <prop key="get*">PROPAGATION_REQUIRED,readOnly,timeout_30</prop>
+                <prop key="count*">PROPAGATION_REQUIRED,readOnly,timeout_30</prop>
+                <prop key="select*">PROPAGATION_REQUIRED,readOnly,timeout_30</prop>
+                <prop key="upgrade*">PROPAGATION_REQUIRES_NEW,ISOLATION_SERIALIZABLE</prop>
+                <prop key="*">PROPAGATION_REQUIRED</prop>
+            </props>
+        </property> 
+    </bean>
+    -->
+
+    <!-- AOP 네임스페이스 사용 안 할 시 -->
+    <!-- 
     
+    <bean id="transactionPointcut" class="org.springframework.aop.aspectj.AspectJExpressionPointcut">
+        <property name="expression" value="execution(* *..*ServiceImpl.upgrade*(..))" />
+    </bean>
+
+    <bean id="transactionAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor">
+        <property name="advice" ref="transactionAdvice" />
+        <property name="pointcut" ref="transactionPointcut" />
+    </bean>
+    -->
+    
+    <bean id="testUserService"
+        class="com.tobexam.UserServiceTest$TestUserServiceImpl"
+        parent="userService"
+    />
+
     <!-- DefaultAdvisorAutoProxyCreator는 Bean으로만 등록하면 되므로, id는 필요 없음 -->
     <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" />
 </beans>

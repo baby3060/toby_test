@@ -43,7 +43,7 @@ import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations="/applicationContext.xml")
+@ContextConfiguration(locations="/test-applicationContext.xml")
 public class UserServiceTest {
     @Autowired
     ApplicationContext context;
