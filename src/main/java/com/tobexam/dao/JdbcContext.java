@@ -12,6 +12,10 @@ import com.tobexam.model.*;
 import java.util.*;
 import java.lang.reflect.*;
 
+/**
+ * jdbcTemplate 동작 원리 보기 위해 작성한 클래스
+ * @deprecated
+ */
 public class JdbcContext implements Context {
     private DataSource dataSource;
 

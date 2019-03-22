@@ -12,6 +12,10 @@ import javax.sql.DataSource;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 
+/**
+ * jdbcContext용 테스트 클래스
+ * @deprecated
+ */
 public class UserDaoJdbc_Mod implements UserDao {
     private Context jdbcContext;
     private DataSource dataSource;
