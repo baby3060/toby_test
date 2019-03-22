@@ -355,5 +355,5 @@
 3. 압축 풀고, 특정 위치에 옮기기.
 4. cmd창 띄우고, 프로젝트 루트에서 
 <code>
-java -cp [zip 파일 압축 해제]\* com.sun.tools.xjc.XJCFacade -p [압축 풀 위치] [1에서 작성한 파일 이름 확장자까지] -d [기본 디렉토리]
+java -cp [zip 파일 압축 해제]\* com.sun.tools.xjc.XJCFacade -p [압축 풀 위치] [1에서 작성한 파일 이름 확장자까지] -d [기본 디렉토리] -encoding UTF-8
 </code>
