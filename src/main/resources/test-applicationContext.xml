@@ -39,20 +39,7 @@
         <property name="sqlService" ref="sqlService" />
     </bean>
 
-    <bean id="sqlService" class="com.tobexam.sqlconfig.SimpleSqlService">
-        <property name="sqlMap">
-            <map>
-                <entry key="add" value="Insert Into USER(id, name, password, level, login, recommend, email) Values (?, ?, ?, ?, ?, ?, ?)" />
-                <entry key="deleteAll" value="Delete From USER" />
-                <entry key="update" value="Update USER set name = ?, password = ?, level = ?, login = ?, recommend = ?, email = ? Where id = ?" />
-                <entry key="delete" value="Delete From USER Where id = ?" />
-                <entry key="get" value="Select * From USER Where id = ?" />
-                <entry key="count" value="Select Count(*) As cnt From USER Where id = ?" />
-                <entry key="countAll" value="Select Count(*) As cnt From USER" />
-                <entry key="selectAll" value="Select * From USER Order By id" />
-            </map>
-        </property>
-    </bean>
+    <bean id="sqlService" class="com.tobexam.sqlconfig.XmlSqlService" />
 
     <!-- DataSource가 아닌 JTA(글로벌 트랜잭션)을 사용할 경우  
         org.springframework.jdbc.datasource.DataSourceTransactionManager를 org.springframework.transaction.jta.JtaTransactionManager로 수정한다.

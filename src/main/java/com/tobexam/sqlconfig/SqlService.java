@@ -1,5 +1,5 @@
 package com.tobexam.sqlconfig;
 
 public interface SqlService {
-    public String getSql(String key) throws SqlretrievalFailureException;
+    public String getSql(String key) throws SqlRetrievalFailureException;
 }
