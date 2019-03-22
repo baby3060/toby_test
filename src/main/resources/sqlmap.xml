@@ -4,8 +4,13 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.epril.com/sqlmap ../../../sqlmap.xsd"
 >
-    <sql key="add">insert</sql>
-    <sql key="get">select</sql>
-    <sql key="delete">delete</sql>
+    <sql key="add" >Insert Into USER(id, name, password, level, login, recommend, email) Values (?, ?, ?, ?, ?, ?, ?)</sql>
+    <sql key="deleteAll" >Delete From USER</sql>
+    <sql key="update" >Update USER set name = ?, password = ?, level = ?, login = ?, recommend = ?, email = ? Where id = ?</sql>
+    <sql key="delete" >Delete From USER Where id = ?</sql>
+    <sql key="get" >Select * From USER Where id = ?</sql>
+    <sql key="count" >Select Count(*) As cnt From USER Where id = ?</sql>
+    <sql key="countAll">Select Count(*) As cnt From USER</sql>
+    <sql key="selectAll">Select * From USER Order By id</sql>
 
 </sqlmap>
