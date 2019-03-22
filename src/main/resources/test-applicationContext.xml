@@ -15,7 +15,9 @@
                            ">
 
     <tx:annotation-driven />
-
+    <!-- Bean 후처리 애노테이션을 사용하기 위한 태그 -->
+    <context:annotation-config /> 
+    
     <bean id="xmlParsing" class="com.tobexam.common.XMLParsingConfig">
         <property name="fileName" value="mysql_conn.xml" />
     </bean>
