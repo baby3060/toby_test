@@ -357,3 +357,5 @@
 <code>
 java -cp [zip 파일 압축 해제]\* com.sun.tools.xjc.XJCFacade -p [압축 풀 위치] [1에서 작성한 파일 이름 확장자까지] -d [기본 디렉토리] -encoding UTF-8
 </code>
+
+## 책에 나와있는 순환참조를 하니까 allowEagerInit 에러가 뜬다(스프링 5.1.5 기준, circular reference). <beans default-lazy-init="true"></beans> 와 같은 형태를 하라고 해서 했는데도, 안 되고, lazy-init 속성을 사용해도 안 되었다. 그냥 이런 순환 참조 형태가 안 되게끔 만들어야 되겠다.
