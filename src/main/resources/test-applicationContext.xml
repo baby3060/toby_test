@@ -51,6 +51,16 @@
     <bean id="sqlService" class="com.tobexam.sqlconfig.OxmService">
         <property name="unmarshaller" ref="unmarshaller" />
         <property name="sqlRegistry" ref="sqlRegistry" />
+        <!-- Classpath에서부터 읽음. Maven의 Resource는 클래스패스에 저장. 문자열 값으로 가져오면, Resource로 인식 -->
+        <!-- Java의 ClassPathResource와 동일 -->
+        
+        <property name="sqlmap" value="classpath:sqlmap.xml" />
+        
+        <!-- file:로 시작하게 되면, 루트 디렉토리에서부터 시작됨. 해당 프로젝트가 C 드라이브에 있다면, C 드라이브, D 드라이브 밑에 있으면 D 부터 -->
+        <!-- 현재 드라이브 밑에 JavaProjects 폴더 밑에 tob_example 폴더, src, main, resources 밑의 sqlmap.xml에서 읽어들임 -->
+        <!-- 
+        <property name="sqlmap" value="file:/JavaProjects/tob_example/src/main/resources/sqlmap.xml" />
+        -->
     </bean>
     
     <!-- Jaxb 사용 -->
