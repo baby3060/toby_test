@@ -4,7 +4,13 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans 
                            http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
                            ">
+    <!--
     <bean id="unmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
         <property name="contextPath" value="com.tobexam.sqlconfig.jaxb" />
+    </bean>
+    -->
+
+    <bean id="unmarshaller" class="org.springframework.oxm.castor.CastorMarshaller">
+        <property name="mappingLocation" value="oxm/mapping.xml" />
     </bean>
 </beans>
