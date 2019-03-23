@@ -15,6 +15,9 @@ import org.springframework.oxm.Unmarshaller;
 import org.springframework.oxm.XmlMappingException;
 
 public class OxmService implements SqlService {
+    // init 부분과 getSql이 baseSqlService와 동일하다. 프록시에서 봤던 것처럼 이 클래스를 프록시로 두고, 위 두 메소드를 BaseSqlService에 위임한다.
+    private final static BaseSqlService baseSqlService = new BaseSqlService();
+
     // Default 설정
     private SqlRegistry sqlRegistry = new HashMapSqlRegistry();
 
@@ -69,12 +72,15 @@ public class OxmService implements SqlService {
 
     @PostConstruct
     public void initXml() {
-        this.oxmSqlReader.readSql(this.sqlRegistry);
+        this.baseSqlService.setSqlReader(this.oxmSqlReader);
+        this.baseSqlService.setSqlRegistry(this.sqlRegistry);
+        
+        this.baseSqlService.initSql();
     }
 
     public String getSql(String key) throws SqlRetrievalFailureException {
         try {
-            return this.sqlRegistry.findSql(key);
+            return this.baseSqlService.getSql(key);
         } catch(SqlNotFoundException e) {
             throw new SqlRetrievalFailureException(e.getMessage(), e);
         }
