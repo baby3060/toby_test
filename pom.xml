@@ -101,6 +101,13 @@
         <artifactId>spring-test</artifactId>
         <version>5.1.5.RELEASE</version>
     </dependency>
+
+    <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-oxm</artifactId>
+        <version>5.1.5.RELEASE</version>
+    </dependency>
+
     <!-- https://mvnrepository.com/artifact/javax.mail/com.springsource.javax.mail -->
     <dependency>
         <groupId>javax.mail</groupId>
