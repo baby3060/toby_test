@@ -48,11 +48,22 @@
     </bean>
     -->
 
-    <bean id="sqlService" class="com.tobexam.sqlconfig.DefaultSqlService"  />
-    
-    <bean id="sqlReader" class="com.tobexam.sqlconfig.JaxbXmlSqlReader" >
-        <property name="sqlmapFile" value="sqlmap.xml" />
+    <bean id="sqlService" class="com.tobexam.sqlconfig.OxmService">
+        <property name="unmarshaller" ref="unmarshaller" />
+        <property name="sqlRegistry" ref="sqlRegistry" />
     </bean>
+    
+    <!-- Jaxb 사용 -->
+    <bean id="unmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+        <property name="contextPath" value="com.tobexam.sqlconfig.jaxb" />
+    </bean>
+
+    <!-- Castor 사용 -->
+    <!-- 
+    <bean id="unmarshaller" class="org.springframework.oxm.castor.CastorMarshaller">
+        <property name="mappingLocation" value="oxm/mapping.xml" />
+    </bean>
+    -->
 
     <bean id="sqlRegistry" class="com.tobexam.sqlconfig.HashMapSqlRegistry" />
 
