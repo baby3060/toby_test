@@ -4,6 +4,7 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:aop="http://www.springframework.org/schema/aop"
        xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
        xsi:schemaLocation="http://www.springframework.org/schema/beans 
                            http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
                            http://www.springframework.org/schema/context
@@ -12,12 +13,24 @@
                            http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
                            http://www.springframework.org/schema/tx
                            http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+                           http://www.springframework.org/schema/jdbc
+                           http://www.springframework.org/schema/jdbc/spring-jdbc-4.0.xsd
                            ">
 
     <tx:annotation-driven />
     <!-- Bean 후처리 애노테이션을 사용하기 위한 태그 -->
     <context:annotation-config /> 
     
+    <jdbc:embedded-database id="embeddedDatabase" type="HSQL">
+        <jdbc:script location="classpath:/embsql/schema.sql" />
+    
+        <!-- OxmService에 입력 데이터가 있으면, 이 스크립트는 사용하지 않음 -->
+        
+        <jdbc:script location="classpath:/embsql/data.sql" />
+
+    </jdbc:embedded-database>
+    
+
     <bean id="xmlParsing" class="com.tobexam.common.XMLParsingConfig">
         <property name="fileName" value="mysql_conn.xml" />
     </bean>
@@ -41,18 +54,13 @@
         <property name="sqlService" ref="sqlService" />
     </bean>
 
-    <!-- 
-    <bean id="sqlService" class="com.tobexam.sqlconfig.BaseSqlService" >
-        <property name="sqlReader" ref="sqlReader" />
-        <property name="sqlRegistry" ref="sqlRegistry" />
-    </bean>
-    -->
-
     <bean id="sqlService" class="com.tobexam.sqlconfig.OxmService">
         <property name="unmarshaller" ref="unmarshaller" />
         <property name="sqlRegistry" ref="sqlRegistry" />
         <!-- Classpath에서부터 읽음. Maven의 Resource는 클래스패스에 저장. 문자열 값으로 가져오면, Resource로 인식 -->
         <!-- Java의 ClassPathResource와 동일 -->
+        
+        <!-- OxmService -->
         
         <property name="sqlmap" value="classpath:sqlmap.xml" />
         
@@ -74,9 +82,14 @@
         <property name="mappingLocation" value="oxm/mapping.xml" />
     </bean>
     -->
-
-    <bean id="sqlRegistry" class="com.tobexam.sqlconfig.ConcurrentHashMapSqlRegistry" />
-
+    
+    <bean id="sqlRegistry" class="com.tobexam.sqlconfig.EmbeddedDbSqlRegstry">
+        <property name="dataSource" ref="embeddedDatabase" />
+    </bean>
+    
+    <!-- 
+    <bean id="sqlRegistry" class="com.tobexam.sqlconfig.HashMapSqlRegistry" />
+    -->
     <!-- DataSource가 아닌 JTA(글로벌 트랜잭션)을 사용할 경우  
         org.springframework.jdbc.datasource.DataSourceTransactionManager를 org.springframework.transaction.jta.JtaTransactionManager로 수정한다.
     -->

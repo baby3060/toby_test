@@ -45,14 +45,7 @@ public class EmbededDBTest {
 
     @Test
     public void initData() {
-        assertThat(template.queryForObject("Select Count(*) From sqlmap", new HashMap<String, String>(), Integer.class), is(2));
-
-        List<Map<String, Object>> list = template.queryForList("Select * From sqlmap Order By key_", new HashMap<String, String>());
-
-        assertThat((String)list.get(0).get("key_"), is("KEY1"));
-        assertThat((String)list.get(0).get("sql_"), is("SQL1"));
-        assertThat((String)list.get(1).get("key_"), is("KEY2"));
-        assertThat((String)list.get(1).get("sql_"), is("SQL2"));
+        assertThat(template.queryForObject("Select Count(*) From sqlmap", new HashMap<String, String>(), Integer.class), is(0));
     }
 
     @Test
@@ -64,7 +57,7 @@ public class EmbededDBTest {
 
         template.update("insert into sqlmap(key_, sql_) values (:key_, :sql_)", param);
 
-        assertThat(template.queryForObject("Select Count(*) From sqlmap", new HashMap<String, String>(), Integer.class), is(3));
+        assertThat(template.queryForObject("Select Count(*) From sqlmap", new HashMap<String, String>(), Integer.class), is(1));
     }
 
 }

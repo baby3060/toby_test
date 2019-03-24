@@ -3,7 +3,8 @@
     xmlns="http://www.epril.com/sqlmap"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.epril.com/sqlmap ../../../sqlmap.xsd"
->
+>   
+    
     <sql key="add" >Insert Into USER(id, name, password, level, login, recommend, email) Values (?, ?, ?, ?, ?, ?, ?)</sql>
     <sql key="deleteAll" >Delete From USER</sql>
     <sql key="update" >Update USER set name = ?, password = ?, level = ?, login = ?, recommend = ?, email = ? Where id = ?</sql>

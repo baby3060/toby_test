@@ -372,3 +372,16 @@ java -cp [zip 파일 압축 해제]\* com.sun.tools.xjc.XJCFacade -p [압축 풀
 > file:(FileSystemResource), classpath:(ClassPathResource), 접두어 없음(ResourceLoader 구현에 따라 결정), http:(UrlResource)
 
 #### @PostConstruct와 @PreDestory는 deprecated 대신 스프링의 InitializingBean을 구현하여 afterPropertiesSet() 메소드에 PostConstruct 메소드를, @PreDestroy 대신 DisposableBean을 구현하여, destroy() 메소드를 작성
+
+### NamedParameterJdbcTemplate => JdbcTemplate과는 다른 Template이고, 인자값을 항상 Key, Value 형식으로 받는다. JdbcTemplate은 쿼리에 ?가 들어가지만, 이 클래스는 {:[Map의 키값]}으로 들어간다. 
+
+<pre>
+<code>
+    Map&lt;String, Object&gt; param = new HashMap&lt;String, Object&gt;();
+
+    param.put("key_", "KEY3");
+    param.put("sql_", "SQL3");
+
+    template.update("insert into sqlmap(key_, sql_) values (:key_, :sql_)", param);
+</code>
+</pre>
