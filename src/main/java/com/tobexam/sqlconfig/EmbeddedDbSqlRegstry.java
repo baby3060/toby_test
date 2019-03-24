@@ -10,13 +10,23 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 
+import org.springframework.transaction.TransactionStatus;
+
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+
+import org.springframework.transaction.support.TransactionCallbackWithoutResult;
+
 import static org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType.HSQL;
 
 public class EmbeddedDbSqlRegstry implements UpdatableSqlRegistry {
     JdbcTemplate template;
+    TransactionTemplate transactionTemplate;
 
     public void setDataSource(DataSource dataSource) {
         this.template = new JdbcTemplate(dataSource);
+
+        transactionTemplate = new TransactionTemplate(new DataSourceTransactionManager(dataSource));
     }
 
     public void registerSql(String key, String value) {
@@ -40,9 +50,13 @@ public class EmbeddedDbSqlRegstry implements UpdatableSqlRegistry {
         }
     }
 
-    public void updateSql(Map<String, String> sqlMap) throws SqlUpdateFailureException {
-        for( Map.Entry<String, String> entry : sqlMap.entrySet() ) {
-            updateSql(entry.getKey(), entry.getValue());
-        }
+    public void updateSql(final Map<String, String> sqlMap) throws SqlUpdateFailureException {
+        transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+            protected void doInTransactionWithoutResult(TransactionStatus status) {
+                for( Map.Entry<String, String> entry : sqlMap.entrySet() ) {
+                    updateSql(entry.getKey(), entry.getValue());
+                }
+            }
+        });
     }
 }

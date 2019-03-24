@@ -385,3 +385,5 @@ java -cp [zip 파일 압축 해제]\* com.sun.tools.xjc.XJCFacade -p [압축 풀
     template.update("insert into sqlmap(key_, sql_) values (:key_, :sql_)", param);
 </code>
 </pre>
+
+### SQL 파일을 읽어와서, 내장형 DB에 저장하고, 내장형 DB에서부터 SQL 읽어옴
