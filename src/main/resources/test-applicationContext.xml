@@ -75,7 +75,7 @@
     </bean>
     -->
 
-    <bean id="sqlRegistry" class="com.tobexam.sqlconfig.HashMapSqlRegistry" />
+    <bean id="sqlRegistry" class="com.tobexam.sqlconfig.ConcurrentHashMapSqlRegistry" />
 
     <!-- DataSource가 아닌 JTA(글로벌 트랜잭션)을 사용할 경우  
         org.springframework.jdbc.datasource.DataSourceTransactionManager를 org.springframework.transaction.jta.JtaTransactionManager로 수정한다.
