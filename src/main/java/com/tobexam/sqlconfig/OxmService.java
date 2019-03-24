@@ -9,16 +9,15 @@ import java.io.IOException;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
-import javax.annotation.PostConstruct;
-
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ClassPathResource;
 
 import org.springframework.oxm.Unmarshaller;
 import org.springframework.oxm.XmlMappingException;
 
+import org.springframework.beans.factory.InitializingBean;
 
-public class OxmService implements SqlService {
+public class OxmService implements SqlService, InitializingBean {
     // init 부분과 getSql이 baseSqlService와 동일하다. 프록시에서 봤던 것처럼 이 클래스를 프록시로 두고, 위 두 메소드를 BaseSqlService에 위임한다.
     private final static BaseSqlService baseSqlService = new BaseSqlService();
 
@@ -71,12 +70,17 @@ public class OxmService implements SqlService {
         }
     }
 
-    @PostConstruct
-    public void initXml() {
+    /**
+     * SQL 초기화
+     * 이 애노테이션이 붙으면 스프링은 해당 클래스 Bean을 생성하고, DI 작업을 마친 뒤 이 애노테이션이 달린 메소드를 실행한다.
+     * PostConstruct 대신 InitializingBean 구현
+     * XML 설정 읽기 => Bean 객체 생성 => DI => 후처리기 수행
+     */
+    public void afterPropertiesSet() throws Exception {
         this.baseSqlService.setSqlReader(this.oxmSqlReader);
         this.baseSqlService.setSqlRegistry(this.sqlRegistry);
         
-        this.baseSqlService.initSql();
+        this.baseSqlService.afterPropertiesSet();
     }
 
     public String getSql(String key) throws SqlRetrievalFailureException {

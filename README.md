@@ -247,6 +247,8 @@
 ##### ResultSetExtractor : 단일 컬럼, RowMapper : 여러 컬럼을 매핑
 #### jdbcTemplate.queryForObject는 단일행이고, query는 기본이 List이다.
 
+#### 스프링 JDBC를 사용할 때는 jdbcTemplate, mybatis와 spring 연동시는 org.mybatis.spring.SqlSessionTemplate 사용
+
 <hr />
 
 ### 트랜잭션을 적용하거나 다중 DB, 특정 DB 매핑 기술(JPA, Hibernate, myBatis 등) 등을 쓸 때 UserService에서 Connection 및 특정 구체 객체에 의존하는 경우가 생긴다. 이렇게 서비스 객체에서 특정 기술을 사용하기 때문에 추상화가 필요하다(이걸 스프링이 제공해준다).
@@ -368,3 +370,5 @@ java -cp [zip 파일 압축 해제]\* com.sun.tools.xjc.XJCFacade -p [압축 풀
 #### 실질적으로 가져오는 거 ResourceLoader
 ##### 접두어를 붙이면, ResourceLoader의 종류와 상관없이 해당 접두어(위치)에 따라 리소스를 가져온다.
 > file:(FileSystemResource), classpath:(ClassPathResource), 접두어 없음(ResourceLoader 구현에 따라 결정), http:(UrlResource)
+
+#### @PostConstruct와 @PreDestory는 deprecated 대신 스프링의 InitializingBean을 구현하여 afterPropertiesSet() 메소드에 PostConstruct 메소드를, @PreDestroy 대신 DisposableBean을 구현하여, destroy() 메소드를 작성
