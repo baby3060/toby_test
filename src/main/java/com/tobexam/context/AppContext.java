@@ -36,7 +36,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 
 import org.springframework.core.env.Environment;
-
+import org.springframework.beans.factory.annotation.Value;
 
 @Configuration
 @EnableTransactionManagement
@@ -45,6 +45,12 @@ import org.springframework.core.env.Environment;
 @Import({SqlServiceContext.class, AppContext.ProductionAppContext.class, AppContext.TestAppContext.class})
 @PropertySource("/db/database.properties")
 public class AppContext {
+
+    @Value("${db.driverClass}") Class<? extends com.mysql.cj.jdbc.Driver> driverClass;
+    @Value("${db.url}") String url;
+    @Value("${db.username}") String username;
+    @Value("${db.password}") String password;
+
 
     @Autowired
     private Environment env;
@@ -101,6 +107,8 @@ public class AppContext {
         dataSource.setPassword(connBean.getUserPass());
         */
 
+        /*
+
         try {
             dataSource.setDriverClass((Class<? extends com.mysql.cj.jdbc.Driver>)Class.forName(env.getProperty("db.driverClass")));
         } catch(ClassNotFoundException e) {
@@ -110,6 +118,13 @@ public class AppContext {
         dataSource.setUrl(env.getProperty("db.url"));
         dataSource.setUsername(env.getProperty("db.username"));
         dataSource.setPassword(env.getProperty("db.password"));
+
+        */
+
+        dataSource.setDriverClass(this.driverClass);
+        dataSource.setUrl(this.url);
+        dataSource.setUsername(this.username);
+        dataSource.setPassword(this.password);
 
         return dataSource;
     }
