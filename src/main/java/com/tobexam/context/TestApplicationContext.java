@@ -68,6 +68,26 @@ public class TestApplicationContext {
     }
 
     @Bean
+    public UserService userService() {
+        UserServiceImpl service = new UserServiceImpl();
+
+        service.setUserDao(userDao());
+        service.setMailSender(mailSender());
+
+        return service;
+    }
+
+    @Bean
+    public UserService testUserService() {
+        UserServiceImpl.TestUserServiceImpl service = new UserServiceImpl.TestUserServiceImpl();
+
+        service.setUserDao(userDao());
+        service.setMailSender(mailSender());
+
+        return service;
+    }
+
+    @Bean
     public PlatformTransactionManager transactionManager() {
         DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();
         transactionManager.setDataSource(dataSource());
