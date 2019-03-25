@@ -1,5 +1,7 @@
 package com.tobexam.context;
 
+import com.tobexam.context.annotation.*;
+
 import com.tobexam.common.*;
 import com.tobexam.dao.*;
 import com.tobexam.service.*;
@@ -8,7 +10,8 @@ import com.tobexam.sqlconfig.*;
 import com.mysql.cj.jdbc.Driver;
 
 import javax.sql.DataSource;
-import javax.annotation.Resource;
+
+import org.springframework.core.io.Resource;
 
 import org.springframework.context.annotation.Bean;
 
@@ -34,7 +37,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 
 import org.springframework.context.annotation.PropertySource;
-
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.env.Environment;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -42,15 +45,19 @@ import org.springframework.beans.factory.annotation.Value;
 @EnableTransactionManagement
 @ComponentScan(basePackages="com.tobexam")
 @ImportResource("/test-applicationContext.xml")
-@Import({SqlServiceContext.class, AppContext.ProductionAppContext.class, AppContext.TestAppContext.class})
+@EnableSqlService
 @PropertySource("/db/database.properties")
-public class AppContext {
+public class AppContext implements SqlMapConfig {
 
     @Value("${db.driverClass}") Class<? extends com.mysql.cj.jdbc.Driver> driverClass;
     @Value("${db.url}") String url;
     @Value("${db.username}") String username;
     @Value("${db.password}") String password;
 
+    @Override
+    public Resource getSqlMapResource() {
+        return new ClassPathResource("sqlmap.xml");
+    }
 
     @Autowired
     private Environment env;
@@ -157,10 +164,4 @@ public class AppContext {
         mailSender.setHost("mail.server.com");
         return mailSender;
     }
-
-    @Bean
-    public SqlMapConfig sqlMapConfig() {
-        return new UserSqlMapConfig();
-    }
-
 }
