@@ -15,6 +15,7 @@ import org.mockito.ArgumentCaptor;
 
 import java.util.*;
 
+import com.tobexam.context.*;
 import com.tobexam.model.*;
 import com.tobexam.dao.*;
 import com.tobexam.service.*;
@@ -43,7 +44,7 @@ import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations="/test-applicationContext.xml")
+@ContextConfiguration(classes=TestApplicationContext.class)
 public class UserServiceTest {
     @Autowired
     ApplicationContext context;
@@ -133,8 +134,6 @@ public class UserServiceTest {
 
     @Before
     public void setUp() {
-        ApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");
-
         users = new ArrayList<User>(Arrays.asList(
             new User("1", "김길동", "비번1", Level.BASIC, 49, 0, "a@n.com"),
             new User("2", "배길동", "비번2", Level.SILVER, 60, 31, "b@n.com"),

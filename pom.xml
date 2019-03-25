@@ -197,7 +197,10 @@
         <!-- 테스트할 클래스들 따로 지정(안 하면 하나만 실행) -->
         
         <configuration>
+          <!-- 
           <test>com.tobexam.*Test</test>
+          -->
+          <test>com.tobexam.UserServiceTest</test>
         </configuration>
         
       </plugin>

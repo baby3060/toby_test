@@ -25,27 +25,13 @@
 
     <jdbc:embedded-database id="embeddedDatabase" type="HSQL">
         <jdbc:script location="classpath:/embsql/schema.sql" />
-    
-        <!-- OxmService에 입력 데이터가 있으면, 이 스크립트는 사용하지 않음 -->
-        
         <jdbc:script location="classpath:/embsql/data.sql" />
-
     </jdbc:embedded-database>
     
-
-    <bean id="xmlParsing" class="com.tobexam.common.XMLParsingConfig">
-        <property name="fileName" value="mysql_conn.xml" />
-    </bean>
-
+    <!-- Exception 처리 때문에 그냥 여기에 놔둠 -->
     <bean id="connBean" class="com.tobexam.common.ConnectionBean"
         factory-bean="xmlParsing" factory-method="setConfig" />
-    
-    <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
-        <property name="driverClass" value="#{connBean.getClassName()}" />
-        <property name="url" value="#{connBean.getConnStr()}" />
-        <property name="username" value="#{connBean.getUserName()}" />
-        <property name="password" value="#{connBean.getUserPass()}" />
-    </bean>
+
 
     <bean id="jdbcContext" class="com.tobexam.dao.JdbcContext">
         <property name="dataSource" ref="dataSource" />
@@ -95,9 +81,7 @@
     <!-- DataSource가 아닌 JTA(글로벌 트랜잭션)을 사용할 경우  
         org.springframework.jdbc.datasource.DataSourceTransactionManager를 org.springframework.transaction.jta.JtaTransactionManager로 수정한다.
     -->
-    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-        <property name="dataSource" ref="dataSource" />
-    </bean>
+    
     <!--
         <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
      -->
@@ -111,26 +95,8 @@
     </bean>
 
     <aop:config>
-        <!-- 포인트컷 외장 어드바이저 -->
-        <!-- 
-        <aop:pointcut id="transactionPointcut" 
-                    expression="execution(* *..*ServiceImpl.upgrade*(..))" />
-        <aop:advisor advice-ref="transactionAdvice" pointcut-ref="transactionPointcut" />
-        -->
-        <!-- 포인트컷 내장 어드바이저 -->
-        <!-- 
-        <aop:advisor advice-ref="transactionAdvice"  pointcut="execution(* *..*ServiceImpl.upgrade*(..))" />
-        -->
-        <!-- Bean이름을 가지고 어드바이스 적용 -->
         <aop:advisor advice-ref="transactionAdvice" pointcut="bean(*Service)" />
     </aop:config>
-
-    <!-- 이전 -->
-    <!-- 
-    <bean id="transactionAdvice" class="com.tobexam.service.TransactionAdvice">
-        <property name="transactionManager" ref="transactionManager" />
-    </bean>
-    -->
     
     <!-- tx 네임스페이스 사용 -->
     <!-- TransactionInterceptor Bean 등록됨 -->

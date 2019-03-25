@@ -11,6 +11,7 @@ import static org.hamcrest.CoreMatchers.is;
 import java.util.*;
 
 import com.tobexam.model.*;
+import com.tobexam.context.*;
 import com.tobexam.dao.*;
 import org.junit.runner.RunWith;
 
@@ -21,7 +22,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.ContextConfiguration;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations="/test-applicationContext.xml")
+@ContextConfiguration(classes=TestApplicationContext.class)
 public class UserDaoTest {
     private UserDao userDao;
 

@@ -20,7 +20,7 @@ public class ConnectionBean {
     }
 
     public String getConnStr() {
-        String connectionStr = String.format("%s%s", this.host, this.databaseName);
+        String connectionStr = String.format("%s%s%s", this.host, this.databaseName, "?characterEncoding=UTF-8");
 
         return connectionStr;
     }
