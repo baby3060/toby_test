@@ -158,4 +158,9 @@ public class AppContext {
         return mailSender;
     }
 
+    @Bean
+    public SqlMapConfig sqlMapConfig() {
+        return new UserSqlMapConfig();
+    }
+
 }

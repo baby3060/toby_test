@@ -28,7 +28,8 @@ import static org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType.
 
 @Configuration
 public class SqlServiceContext {
-    
+    @Autowired SqlMapConfig sqlMapConfig;
+
     @Bean
     public Unmarshaller unmarshaller() {
         Jaxb2Marshaller unmarshaller = new Jaxb2Marshaller();
@@ -61,7 +62,7 @@ public class SqlServiceContext {
 
         service.setUnmarshaller(unmarshaller());
         service.setSqlRegistry(sqlRegistry());
-        service.setSqlmap(new ClassPathResource("sqlmap.xml"));
+        service.setSqlmap(this.sqlMapConfig.getSqlMapResource());
 
         return service;
     }
