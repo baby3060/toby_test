@@ -8,9 +8,9 @@ import com.tobexam.sqlconfig.*;
 import com.mysql.cj.jdbc.Driver;
 
 import javax.sql.DataSource;
+import javax.annotation.Resource;
 
-
-import org.springframework.mail.MailSender;
+import org.springframework.core.io.ClassPathResource;
 
 import org.springframework.oxm.Unmarshaller;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
@@ -24,19 +24,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
+
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 
 // 트랜잭션 매니저 추상화 인터페이스
 import org.springframework.transaction.PlatformTransactionManager;
+// <tx:annotation-driven /> 대용
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import org.springframework.mail.MailSender;
+
+import static org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType.HSQL;
 
 @Configuration
+@EnableTransactionManagement
 @ImportResource("/test-applicationContext.xml")
 public class TestApplicationContext {
     @Autowired
     private ConnectionBean connBean;
-
-    @Autowired
-    private SqlService sqlService;
 
     @Bean
     public XMLParsingConfig xmlParsing() {
@@ -63,7 +69,7 @@ public class TestApplicationContext {
     public UserDao userDao() {
         UserDaoJdbc_Template userDao = new UserDaoJdbc_Template();
         userDao.setDataSource(dataSource());
-        userDao.setSqlService(this.sqlService);
+        userDao.setSqlService(sqlService());
         return userDao;
     }
 
@@ -113,5 +119,35 @@ public class TestApplicationContext {
         DummyMailSender mailSender = new DummyMailSender();
         mailSender.setHost("mail.server.com");
         return mailSender;
+    }
+
+    @Bean
+    public DataSource embeddedDatabase() {
+        return new EmbeddedDatabaseBuilder()
+        .setName("embeddedDatabase")
+        .setType(HSQL)
+        .addScript("classpath:/embsql/schema.sql")
+        .addScript("classpath:/embsql/data.sql")
+        .build();
+    }
+    
+    @Bean
+    public SqlRegistry sqlRegistry() {
+        EmbeddedDbSqlRegstry sqlRegistry = new EmbeddedDbSqlRegstry();
+
+        sqlRegistry.setDataSource(embeddedDatabase());
+
+        return sqlRegistry;
+    }
+
+    @Bean
+    public SqlService sqlService() {
+        OxmService service = new OxmService();
+
+        service.setUnmarshaller(unmarshaller());
+        service.setSqlRegistry(sqlRegistry());
+        service.setSqlmap(new ClassPathResource("sqlmap.xml"));
+
+        return service;
     }
 }

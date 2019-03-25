@@ -17,50 +17,7 @@
                            http://www.springframework.org/schema/jdbc/spring-jdbc-4.0.xsd
                            ">
 
-    <tx:annotation-driven />
-    <!-- Bean 후처리 애노테이션을 사용하기 위한 태그 -->
-    <!-- 
-    <context:annotation-config /> 
-    -->
-
-    <jdbc:embedded-database id="embeddedDatabase" type="HSQL">
-        <jdbc:script location="classpath:/embsql/schema.sql" />
-        <jdbc:script location="classpath:/embsql/data.sql" />
-    </jdbc:embedded-database>
-    
     <!-- Exception 처리 때문에 그냥 여기에 놔둠 -->
     <bean id="connBean" class="com.tobexam.common.ConnectionBean"
         factory-bean="xmlParsing" factory-method="setConfig" />
-
-    <bean id="sqlService" class="com.tobexam.sqlconfig.OxmService">
-        <property name="unmarshaller" ref="unmarshaller" />
-        <property name="sqlRegistry" ref="sqlRegistry" />
-        <property name="sqlmap" value="classpath:sqlmap.xml" />
-    </bean>
-    
-    <bean id="sqlRegistry" class="com.tobexam.sqlconfig.EmbeddedDbSqlRegstry">
-        <property name="dataSource" ref="embeddedDatabase" />
-    </bean>
-    
-    <aop:config>
-        <aop:advisor advice-ref="transactionAdvice" pointcut="bean(*Service)" />
-    </aop:config>
-    
-    <!-- tx 네임스페이스 사용 -->
-    <!-- TransactionInterceptor Bean 등록됨 -->
-    <!-- 전파 속성 propagation이 REQUIRED라면 생략 가능 -->
-    <!-- TransactionManager의 아이디가 transactionManager일 경우 transaction-manager 속성을 생략할 수 있다. -->
-    <tx:advice id="transactionAdvice">
-        <tx:attributes>
-            <tx:method name="get*" propagation="REQUIRED" read-only="true" timeout="30" />
-            <tx:method name="count*" propagation="REQUIRED" read-only="true" timeout="30" />
-            <tx:method name="select*" propagation="REQUIRED" read-only="true" timeout="30" />
-            <tx:method name="upgrade*" propagation="REQUIRES_NEW" isolation="SERIALIZABLE" />
-            <tx:method name="*" />
-        </tx:attributes>
-    </tx:advice>
-
-
-    <!-- DefaultAdvisorAutoProxyCreator는 Bean으로만 등록하면 되므로, id는 필요 없음 -->
-    <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" />
 </beans>

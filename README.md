@@ -392,3 +392,5 @@ java -cp [zip 파일 압축 해제]\* com.sun.tools.xjc.XJCFacade -p [압축 풀
 
 > @Configuration : Bean 생성이 모여있는 클래스라는 뜻
 > @ImportResource : 해당 Resource의 Bean 정보를 가져오겠다는 애노테이션
+> @Autowired : Type 기준으로 Bean을 찾아서 주입(설정자 메소드 또는 필드)
+> @Resource : Bean 이름 기준으로 주입(설정자 메소드 또는 필드)
