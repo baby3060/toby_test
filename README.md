@@ -407,3 +407,4 @@ java -cp [zip 파일 압축 해제]\* com.sun.tools.xjc.XJCFacade -p [압축 풀
 #### @Todo 
 1. 2판 시작(읽으면서)
 2. 마이바티스와 JPA 적용해보기.
+3. Logging Framework 적용해보기(Logback).
