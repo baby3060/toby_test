@@ -45,8 +45,11 @@ import org.springframework.mail.MailSender;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 
+import org.springframework.test.context.ActiveProfiles;
+
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes=TestApplicationContext.class)
+@ContextConfiguration(classes=AppContext.class)
+@ActiveProfiles("test")
 public class UserServiceTest {
     @Autowired
     ApplicationContext context;

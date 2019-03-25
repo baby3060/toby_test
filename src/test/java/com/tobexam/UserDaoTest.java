@@ -15,15 +15,21 @@ import com.tobexam.context.*;
 import com.tobexam.dao.*;
 import org.junit.runner.RunWith;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.ContextConfiguration;
 
+import org.springframework.test.context.ActiveProfiles;
+
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes=TestApplicationContext.class)
+@ContextConfiguration(classes={AppContext.class})
+@ActiveProfiles("test")
 public class UserDaoTest {
+    @Autowired
     private UserDao userDao;
 
     User user1;
@@ -32,10 +38,6 @@ public class UserDaoTest {
 
     @Before
     public void setUp() {
-        ApplicationContext context = new GenericXmlApplicationContext("test-applicationContext.xml");
-
-        userDao = context.getBean("userDao", UserDaoJdbc_Template.class);
-
         user1 = new User("1", "이길동", "12345", Level.BASIC, 1, 0, "a@n.com");
         user2 = new User("2", "김길동", "12345", Level.SILVER, 55, 10, "b@n.com");
         user3 = new User("3", "최길동", "12345", Level.GOLD, 100, 40, "c@n.com");

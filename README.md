@@ -391,10 +391,13 @@ java -cp [zip 파일 압축 해제]\* com.sun.tools.xjc.XJCFacade -p [압축 풀
 ### XML 설정을 Java Annotation으로 이동(test-), 기존 내용(test-applicationContext.xml)은 applicationContext.xml에 그대로 옮겨놓음
 
 > @Configuration : Bean 생성이 모여있는 클래스라는 뜻
-> @ImportResource : 해당 Resource의 Bean 정보를 가져오겠다는 애노테이션
+> @ImportResource : 해당 Resource의 Bean 정보를 가져오겠다는 애노테이션(@Import 달릴 수 있는 클래스 외에 붙일 수 있음 : XML, NO-CONFIGURATIO)
 > @Autowired : Type 기준으로 Bean을 찾아서 주입(설정자 메소드 또는 필드)
 > @Resource : Bean 이름 기준으로 주입(설정자 메소드 또는 필드)
 > @Component : 해당 클래스를 자동으로 Bean으로 등록
 > @ComponentScan : Bean 스캔 기능을 사용하겠다는 애노테이션. basePackages를 사용하여 기본 탐색 패키지를 선언할 수 있다.
 > @Repository : 영속성 레이어를 Bean으로 등록(@Component를 메타 애노테이션으로 지님). 파일, 데이터베이스 관련된 클래스에 붙임.
 > @Service : 서비스 레이어를 Bean으로 등록(@Component를 메타 애노테이션으로 지님). 서비스 클래스에 붙임.
+> @Import : @Configuration, @ImportSelector, @ImportBeanDefinitionRegistrar 이 달린 클래스를 포함시킨다. 해당 클래스만 포함시켜도, 포함시킨 클래스도 따라옴.
+> @Profile : 동일한 Bean을 생성하지만, 생성 로직이 다를 경우(Test, Production) Bean 생성 클래스(@Configuration)에 이 애노테이션을 붙이면, 해당 용도에 이 Bean이 생성된다.
+> @ActiveProfiles : 현재 클래스(서비스 및 테스트)의 설정을 해당 Profile로 실시한다는 뜻이다.

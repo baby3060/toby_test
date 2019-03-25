@@ -2,6 +2,8 @@ package com.tobexam;
 
 import java.util.*;
 
+import com.tobexam.context.*;
+
 import org.junit.Test;
 import org.junit.Before;
 import org.junit.After;
@@ -20,8 +22,11 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 
 import static org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType.HSQL;
 
+import org.springframework.test.context.ActiveProfiles;
+
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations="/test-applicationContext.xml")
+@ContextConfiguration(classes={AppContext.class})
+@ActiveProfiles("test")
 public class EmbededDBTest {
     EmbeddedDatabase db;
     NamedParameterJdbcTemplate template;

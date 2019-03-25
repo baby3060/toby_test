@@ -10,11 +10,6 @@ import com.mysql.cj.jdbc.Driver;
 import javax.sql.DataSource;
 import javax.annotation.Resource;
 
-import org.springframework.core.io.ClassPathResource;
-
-import org.springframework.oxm.Unmarshaller;
-import org.springframework.oxm.jaxb.Jaxb2Marshaller;
-
 import org.springframework.context.annotation.Bean;
 
 import org.springframework.context.annotation.Configuration;
@@ -24,9 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
-
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 
 // 트랜잭션 매니저 추상화 인터페이스
 import org.springframework.transaction.PlatformTransactionManager;
@@ -35,15 +27,16 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import org.springframework.mail.MailSender;
 
-import static org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType.HSQL;
-
 import org.springframework.context.annotation.ComponentScan;
+
+import org.springframework.context.annotation.Import;
 
 @Configuration
 @EnableTransactionManagement
 @ComponentScan(basePackages="com.tobexam")
 @ImportResource("/test-applicationContext.xml")
-public class TestApplicationContext {
+@Import({SqlServiceContext.class, ProductionAppContext.class, TestAppContext.class})
+public class AppContext {
     @Autowired
     private ConnectionBean connBean;
 
@@ -89,12 +82,6 @@ public class TestApplicationContext {
         return jdbcContext;
     }
 
-    @Bean
-    public Unmarshaller unmarshaller() {
-        Jaxb2Marshaller unmarshaller = new Jaxb2Marshaller();
-        unmarshaller.setContextPath("com.tobexam.sqlconfig.jaxb");
-        return unmarshaller;
-    }
 
     @Bean
     public MailSender mailSender() {
@@ -103,33 +90,4 @@ public class TestApplicationContext {
         return mailSender;
     }
 
-    @Bean
-    public DataSource embeddedDatabase() {
-        return new EmbeddedDatabaseBuilder()
-        .setName("embeddedDatabase")
-        .setType(HSQL)
-        .addScript("classpath:/embsql/schema.sql")
-        .addScript("classpath:/embsql/data.sql")
-        .build();
-    }
-    
-    @Bean
-    public SqlRegistry sqlRegistry() {
-        EmbeddedDbSqlRegstry sqlRegistry = new EmbeddedDbSqlRegstry();
-
-        sqlRegistry.setDataSource(embeddedDatabase());
-
-        return sqlRegistry;
-    }
-
-    @Bean
-    public SqlService sqlService() {
-        OxmService service = new OxmService();
-
-        service.setUnmarshaller(unmarshaller());
-        service.setSqlRegistry(sqlRegistry());
-        service.setSqlmap(new ClassPathResource("sqlmap.xml"));
-
-        return service;
-    }
 }
