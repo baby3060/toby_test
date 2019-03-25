@@ -37,8 +37,11 @@ import org.springframework.mail.MailSender;
 
 import static org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType.HSQL;
 
+import org.springframework.context.annotation.ComponentScan;
+
 @Configuration
 @EnableTransactionManagement
+@ComponentScan(basePackages="com.tobexam")
 @ImportResource("/test-applicationContext.xml")
 public class TestApplicationContext {
     @Autowired
@@ -66,29 +69,8 @@ public class TestApplicationContext {
     }
 
     @Bean
-    public UserDao userDao() {
-        UserDaoJdbc_Template userDao = new UserDaoJdbc_Template();
-        userDao.setDataSource(dataSource());
-        userDao.setSqlService(sqlService());
-        return userDao;
-    }
-
-    @Bean
-    public UserService userService() {
-        UserServiceImpl service = new UserServiceImpl();
-
-        service.setUserDao(userDao());
-        service.setMailSender(mailSender());
-
-        return service;
-    }
-
-    @Bean
     public UserService testUserService() {
         UserServiceImpl.TestUserServiceImpl service = new UserServiceImpl.TestUserServiceImpl();
-
-        service.setUserDao(userDao());
-        service.setMailSender(mailSender());
 
         return service;
     }

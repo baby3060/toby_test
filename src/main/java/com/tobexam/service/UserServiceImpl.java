@@ -3,6 +3,8 @@ package com.tobexam.service;
 import com.tobexam.model.*;
 import com.tobexam.dao.*;
 
+import org.springframework.stereotype.Service;
+
 import javax.sql.DataSource;
 
 import java.util.*;
@@ -24,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.transaction.annotation.Transactional;
 
+@Service("userService")
 @Transactional
 public class UserServiceImpl implements UserService {
     
@@ -50,6 +53,7 @@ public class UserServiceImpl implements UserService {
 
     public static class TestUserServiceException extends RuntimeException { }
 
+    @Autowired
     private MailSender mailSender;
 
     public void setMailSender(MailSender mailSender) {

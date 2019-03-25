@@ -394,3 +394,7 @@ java -cp [zip 파일 압축 해제]\* com.sun.tools.xjc.XJCFacade -p [압축 풀
 > @ImportResource : 해당 Resource의 Bean 정보를 가져오겠다는 애노테이션
 > @Autowired : Type 기준으로 Bean을 찾아서 주입(설정자 메소드 또는 필드)
 > @Resource : Bean 이름 기준으로 주입(설정자 메소드 또는 필드)
+> @Component : 해당 클래스를 자동으로 Bean으로 등록
+> @ComponentScan : Bean 스캔 기능을 사용하겠다는 애노테이션. basePackages를 사용하여 기본 탐색 패키지를 선언할 수 있다.
+> @Repository : 영속성 레이어를 Bean으로 등록(@Component를 메타 애노테이션으로 지님). 파일, 데이터베이스 관련된 클래스에 붙임.
+> @Service : 서비스 레이어를 Bean으로 등록(@Component를 메타 애노테이션으로 지님). 서비스 클래스에 붙임.

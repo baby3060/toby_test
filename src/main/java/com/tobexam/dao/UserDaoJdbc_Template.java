@@ -3,12 +3,16 @@ package com.tobexam.dao;
 import com.tobexam.model.*;
 import com.tobexam.sqlconfig.*;
 
+import org.springframework.stereotype.Repository;
+
 import java.util.*;
 import java.sql.SQLException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.sql.DataSource;
 
@@ -24,9 +28,13 @@ import org.springframework.dao.DataAccessException;
 /**
  * 스프링의 JdbcTemplate 사용
  */
+// userDao라는 이름의 Bean으로 등록
+@Repository("userDao")
 public class UserDaoJdbc_Template implements UserDao {
 
+    @Autowired
     private SqlService sqlService;
+
 
     public void setSqlService(SqlService sqlService) {
         this.sqlService = sqlService;
@@ -48,6 +56,7 @@ public class UserDaoJdbc_Template implements UserDao {
     };
     private JdbcTemplate jdbcTemplate;
 
+    @Autowired
     public void setDataSource(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
