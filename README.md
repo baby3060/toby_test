@@ -389,3 +389,6 @@ java -cp [zip 파일 압축 해제]\* com.sun.tools.xjc.XJCFacade -p [압축 풀
 ### SQL 파일을 읽어와서, 내장형 DB에 저장하고, 내장형 DB에서부터 SQL 읽어옴
 
 ### XML 설정을 Java Annotation으로 이동(test-), 기존 내용(test-applicationContext.xml)은 applicationContext.xml에 그대로 옮겨놓음
+
+> @Configuration : Bean 생성이 모여있는 클래스라는 뜻
+> @ImportResource : 해당 Resource의 Bean 정보를 가져오겠다는 애노테이션

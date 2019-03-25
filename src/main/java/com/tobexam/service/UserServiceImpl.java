@@ -27,6 +27,29 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class UserServiceImpl implements UserService {
     
+    public static class TestUserServiceImpl extends UserServiceImpl {
+        private String id = "5";
+    
+        protected void upgradeLevel(User user) {
+            
+            if(user.getId().equals(this.id)) {
+                throw new TestUserServiceException();
+            } else {
+                super.upgradeLevel(user);
+            }
+        }
+
+        public List<User> selectAll() {
+            for( User user : super.selectAll() ) {
+                super.update(user);
+            }
+            return null;
+        }
+
+    }
+
+    public static class TestUserServiceException extends RuntimeException { }
+
     private MailSender mailSender;
 
     public void setMailSender(MailSender mailSender) {

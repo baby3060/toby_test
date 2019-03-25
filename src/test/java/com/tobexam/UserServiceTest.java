@@ -22,6 +22,8 @@ import com.tobexam.service.*;
 import org.junit.runner.RunWith;
 
 import javax.sql.DataSource;
+import javax.annotation.Resource;
+
 
 import org.springframework.aop.framework.ProxyFactoryBean;
 
@@ -49,26 +51,6 @@ public class UserServiceTest {
     @Autowired
     ApplicationContext context;
 
-    static class TestUserServiceImpl extends UserServiceImpl {
-        private String id = "5";
-    
-        protected void upgradeLevel(User user) {
-            if(user.getId().equals(this.id)) {
-                throw new TestUserServiceException();
-            } else {
-                super.upgradeLevel(user);
-            }
-        }
-
-        public List<User> selectAll() {
-            for( User user : super.selectAll() ) {
-                super.update(user);
-            }
-            return null;
-        }
-
-    }
-    
     static class MockMailSender implements MailSender {
         private List<String> requests = new ArrayList<String>();
     
@@ -114,8 +96,6 @@ public class UserServiceTest {
     @Autowired
     private MailSender mailSender;
 
-    static class TestUserServiceException extends RuntimeException { }
-
     List<User> users;
 
     @Autowired
@@ -155,7 +135,7 @@ public class UserServiceTest {
         try {
             testUserService.upgradeLevels();
             fail("TestUserServiceException expected");
-        } catch(TestUserServiceException e) {
+        } catch(UserServiceImpl.TestUserServiceException e) {
             
         }
 
@@ -185,7 +165,7 @@ public class UserServiceTest {
         try {
             txUserService.upgradeLevels();
             fail("TestUserServiceException expected");
-        } catch(TestUserServiceException e) {
+        } catch(UserServiceImpl.TestUserServiceException e) {
             
         }
 

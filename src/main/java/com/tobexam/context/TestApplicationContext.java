@@ -1,9 +1,19 @@
 package com.tobexam.context;
 
 import com.tobexam.common.*;
+import com.tobexam.dao.*;
+import com.tobexam.service.*;
+import com.tobexam.sqlconfig.*;
 
 import com.mysql.cj.jdbc.Driver;
+
 import javax.sql.DataSource;
+
+
+import org.springframework.mail.MailSender;
+
+import org.springframework.oxm.Unmarshaller;
+import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 
 import org.springframework.context.annotation.Bean;
 
@@ -24,6 +34,9 @@ import org.springframework.transaction.PlatformTransactionManager;
 public class TestApplicationContext {
     @Autowired
     private ConnectionBean connBean;
+
+    @Autowired
+    private SqlService sqlService;
 
     @Bean
     public XMLParsingConfig xmlParsing() {
@@ -47,9 +60,38 @@ public class TestApplicationContext {
     }
 
     @Bean
+    public UserDao userDao() {
+        UserDaoJdbc_Template userDao = new UserDaoJdbc_Template();
+        userDao.setDataSource(dataSource());
+        userDao.setSqlService(this.sqlService);
+        return userDao;
+    }
+
+    @Bean
     public PlatformTransactionManager transactionManager() {
         DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();
         transactionManager.setDataSource(dataSource());
         return transactionManager;
+    }
+
+    @Bean
+    public JdbcContext jdbcContext() {
+        JdbcContext jdbcContext = new JdbcContext();
+        jdbcContext.setDataSource(dataSource());
+        return jdbcContext;
+    }
+
+    @Bean
+    public Unmarshaller unmarshaller() {
+        Jaxb2Marshaller unmarshaller = new Jaxb2Marshaller();
+        unmarshaller.setContextPath("com.tobexam.sqlconfig.jaxb");
+        return unmarshaller;
+    }
+
+    @Bean
+    public MailSender mailSender() {
+        DummyMailSender mailSender = new DummyMailSender();
+        mailSender.setHost("mail.server.com");
+        return mailSender;
     }
 }

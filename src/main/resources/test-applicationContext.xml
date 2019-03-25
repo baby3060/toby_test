@@ -32,68 +32,16 @@
     <bean id="connBean" class="com.tobexam.common.ConnectionBean"
         factory-bean="xmlParsing" factory-method="setConfig" />
 
-
-    <bean id="jdbcContext" class="com.tobexam.dao.JdbcContext">
-        <property name="dataSource" ref="dataSource" />
-    </bean>
-
-    <bean id="userDao" class="com.tobexam.dao.UserDaoJdbc_Template" >
-        <property name="dataSource" ref="dataSource" />
-        <property name="sqlService" ref="sqlService" />
-    </bean>
-
     <bean id="sqlService" class="com.tobexam.sqlconfig.OxmService">
         <property name="unmarshaller" ref="unmarshaller" />
         <property name="sqlRegistry" ref="sqlRegistry" />
-        <!-- Classpath에서부터 읽음. Maven의 Resource는 클래스패스에 저장. 문자열 값으로 가져오면, Resource로 인식 -->
-        <!-- Java의 ClassPathResource와 동일 -->
-        
-        <!-- OxmService -->
-        
         <property name="sqlmap" value="classpath:sqlmap.xml" />
-        
-        <!-- file:로 시작하게 되면, 루트 디렉토리에서부터 시작됨. 해당 프로젝트가 C 드라이브에 있다면, C 드라이브, D 드라이브 밑에 있으면 D 부터 -->
-        <!-- 현재 드라이브 밑에 JavaProjects 폴더 밑에 tob_example 폴더, src, main, resources 밑의 sqlmap.xml에서 읽어들임 -->
-        <!-- 
-        <property name="sqlmap" value="file:/JavaProjects/tob_example/src/main/resources/sqlmap.xml" />
-        -->
     </bean>
-    
-    <!-- Jaxb 사용 -->
-    <bean id="unmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
-        <property name="contextPath" value="com.tobexam.sqlconfig.jaxb" />
-    </bean>
-
-    <!-- Castor 사용 -->
-    <!-- 
-    <bean id="unmarshaller" class="org.springframework.oxm.castor.CastorMarshaller">
-        <property name="mappingLocation" value="oxm/mapping.xml" />
-    </bean>
-    -->
     
     <bean id="sqlRegistry" class="com.tobexam.sqlconfig.EmbeddedDbSqlRegstry">
         <property name="dataSource" ref="embeddedDatabase" />
     </bean>
     
-    <!-- 
-    <bean id="sqlRegistry" class="com.tobexam.sqlconfig.HashMapSqlRegistry" />
-    -->
-    <!-- DataSource가 아닌 JTA(글로벌 트랜잭션)을 사용할 경우  
-        org.springframework.jdbc.datasource.DataSourceTransactionManager를 org.springframework.transaction.jta.JtaTransactionManager로 수정한다.
-    -->
-    
-    <!--
-        <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
-     -->
-    <bean id="mailSender" class="com.tobexam.service.DummyMailSender">
-        <property name="host" value="mail.server.com" />
-    </bean>
-
-    <bean id="userService" class="com.tobexam.service.UserServiceImpl">
-        <property name="userDao" ref="userDao" />
-        <property name="mailSender" ref="mailSender" />
-    </bean>
-
     <aop:config>
         <aop:advisor advice-ref="transactionAdvice" pointcut="bean(*Service)" />
     </aop:config>
@@ -112,38 +60,14 @@
         </tx:attributes>
     </tx:advice>
 
-    <!-- PROPAGATION_REQUIRED : 기존 트랜잭션에 합승, PROPAGATION_REQUIRES_NEW : 신규 트랜잭션 생성, ISOLATION_SERIALIZABLE : 동시 작업에 영향 받지 않게 완벽하게 고립된 트랜잭션 -->
-    <!-- 
-    <bean id="transactionAdvice" 
-        class="org.springframework.transaction.interceptor.TransactionInterceptor">
-        <property name="transactionManager" ref="transactionManager" />
-        <property name="transactionAttributes">
-            <props>
-                <prop key="get*">PROPAGATION_REQUIRED,readOnly,timeout_30</prop>
-                <prop key="count*">PROPAGATION_REQUIRED,readOnly,timeout_30</prop>
-                <prop key="select*">PROPAGATION_REQUIRED,readOnly,timeout_30</prop>
-                <prop key="upgrade*">PROPAGATION_REQUIRES_NEW,ISOLATION_SERIALIZABLE</prop>
-                <prop key="*">PROPAGATION_REQUIRED</prop>
-            </props>
-        </property> 
-    </bean>
-    -->
-
-    <!-- AOP 네임스페이스 사용 안 할 시 -->
-    <!-- 
-    
-    <bean id="transactionPointcut" class="org.springframework.aop.aspectj.AspectJExpressionPointcut">
-        <property name="expression" value="execution(* *..*ServiceImpl.upgrade*(..))" />
+    <bean id="userService" class="com.tobexam.service.UserServiceImpl">
+        <property name="userDao" ref="userDao" />
+        <property name="mailSender" ref="mailSender" />
     </bean>
 
-    <bean id="transactionAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor">
-        <property name="advice" ref="transactionAdvice" />
-        <property name="pointcut" ref="transactionPointcut" />
-    </bean>
-    -->
-    
+    <!-- Test에 따로 빠져있으므로, 이것도 변환하지 않음 -->
     <bean id="testUserService"
-        class="com.tobexam.UserServiceTest$TestUserServiceImpl"
+        class="com.tobexam.service.UserServiceImpl$TestUserServiceImpl"
         parent="userService"
     />
 
