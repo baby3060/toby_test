@@ -33,12 +33,22 @@ import org.springframework.context.annotation.Import;
 
 import org.springframework.context.annotation.Profile;
 
+import org.springframework.context.annotation.PropertySource;
+
+import org.springframework.core.env.Environment;
+
+
 @Configuration
 @EnableTransactionManagement
 @ComponentScan(basePackages="com.tobexam")
 @ImportResource("/test-applicationContext.xml")
 @Import({SqlServiceContext.class, AppContext.ProductionAppContext.class, AppContext.TestAppContext.class})
+@PropertySource("/db/database.properties")
 public class AppContext {
+
+    @Autowired
+    private Environment env;
+
     @Configuration
     @Profile("production")
     public static class ProductionAppContext {
@@ -84,10 +94,22 @@ public class AppContext {
     public DataSource dataSource() {
         SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
 
+        /*
         dataSource.setDriverClass(Driver.class);
         dataSource.setUrl(connBean.getConnStr());
         dataSource.setUsername(connBean.getUserName());
         dataSource.setPassword(connBean.getUserPass());
+        */
+
+        try {
+            dataSource.setDriverClass((Class<? extends com.mysql.cj.jdbc.Driver>)Class.forName(env.getProperty("db.driverClass")));
+        } catch(ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        dataSource.setUrl(env.getProperty("db.url"));
+        dataSource.setUsername(env.getProperty("db.username"));
+        dataSource.setPassword(env.getProperty("db.password"));
 
         return dataSource;
     }

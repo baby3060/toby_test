@@ -401,3 +401,4 @@ java -cp [zip 파일 압축 해제]\* com.sun.tools.xjc.XJCFacade -p [압축 풀
 > @Import : @Configuration, @ImportSelector, @ImportBeanDefinitionRegistrar 이 달린 클래스를 포함시킨다. 해당 클래스만 포함시켜도, 포함시킨 클래스도 따라옴.
 > @Profile : 동일한 Bean을 생성하지만, 생성 로직이 다를 경우(Test, Production) Bean 생성 클래스(@Configuration)에 이 애노테이션을 붙이면, 해당 용도에 이 Bean이 생성된다.
 > @ActiveProfiles : 현재 클래스(서비스 및 테스트)의 설정을 해당 Profile로 실시한다는 뜻이다.
+> @PropertySource : 안의 .properties 파일을 읽어와서, Environment 타입의 환경 오브젝트 타입으로 저장되며, getProperty() 메소드를 통해서 불러올 수 있다.
