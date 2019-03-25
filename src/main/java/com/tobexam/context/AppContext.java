@@ -31,12 +31,43 @@ import org.springframework.context.annotation.ComponentScan;
 
 import org.springframework.context.annotation.Import;
 
+import org.springframework.context.annotation.Profile;
+
 @Configuration
 @EnableTransactionManagement
 @ComponentScan(basePackages="com.tobexam")
 @ImportResource("/test-applicationContext.xml")
-@Import({SqlServiceContext.class, ProductionAppContext.class, TestAppContext.class})
+@Import({SqlServiceContext.class, AppContext.ProductionAppContext.class, AppContext.TestAppContext.class})
 public class AppContext {
+    @Configuration
+    @Profile("production")
+    public static class ProductionAppContext {
+        @Bean
+        public MailSender mailSender() {
+            DummyMailSender mailSender = new DummyMailSender();
+            mailSender.setHost("mail.server.com");
+            return mailSender;
+        }
+    }
+
+    @Configuration
+    @Profile("test")
+    public static class TestAppContext {
+
+        @Bean
+        public UserService testUserService() {
+            return new UserServiceImpl.TestUserServiceImpl();
+        }
+
+        @Bean
+        public MailSender mailSender() {
+            DummyMailSender mailSender = new DummyMailSender();
+            mailSender.setHost("mail.server.com");
+            return mailSender;
+        }
+
+    }
+
     @Autowired
     private ConnectionBean connBean;
 
