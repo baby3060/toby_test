@@ -403,3 +403,7 @@ java -cp [zip 파일 압축 해제]\* com.sun.tools.xjc.XJCFacade -p [압축 풀
 > @ActiveProfiles : 현재 클래스(서비스 및 테스트)의 설정을 해당 Profile로 실시한다는 뜻이다.
 > @PropertySource : 안의 .properties 파일을 읽어와서, Environment 타입의 환경 오브젝트 타입으로 저장되며, getProperty() 메소드를 통해서 불러올 수 있다.
 > @Value : .properties에서부터 값을 가져와서 치환하여, 자바의 변수에 저장
+
+#### @Todo 
+1. 2판 시작(읽으면서)
+2. 마이바티스와 JPA 적용해보기.
