@@ -19,8 +19,10 @@
 
     <tx:annotation-driven />
     <!-- Bean 후처리 애노테이션을 사용하기 위한 태그 -->
+    <!-- 
     <context:annotation-config /> 
-    
+    -->
+
     <jdbc:embedded-database id="embeddedDatabase" type="HSQL">
         <jdbc:script location="classpath:/embsql/schema.sql" />
     
