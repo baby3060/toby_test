@@ -14,9 +14,15 @@ import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.core.util.StatusPrinter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class App {
+    private static final Logger logger = LoggerFactory.getLogger(App.class);
     
     public static void main( String[] args ) {
-        System.out.println("Test 시작");
+        logger.info("HelloWorld");
     }
 }
