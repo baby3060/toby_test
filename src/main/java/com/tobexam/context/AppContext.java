@@ -41,6 +41,8 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.env.Environment;
 import org.springframework.beans.factory.annotation.Value;
 
+import org.slf4j.Logger;
+
 @Configuration
 @EnableTransactionManagement
 @ComponentScan(basePackages="com.tobexam")
@@ -48,6 +50,8 @@ import org.springframework.beans.factory.annotation.Value;
 @EnableSqlService
 @PropertySource("/db/database.properties")
 public class AppContext implements SqlMapConfig {
+
+    @Log Logger myLogger;
 
     @Value("${db.driverClass}") Class<? extends com.mysql.cj.jdbc.Driver> driverClass;
     @Value("${db.url}") String url;
@@ -106,7 +110,7 @@ public class AppContext implements SqlMapConfig {
     @Bean
     public DataSource dataSource() {
         SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
-
+        myLogger.info("dataSource Logging");
         /*
         dataSource.setDriverClass(Driver.class);
         dataSource.setUrl(connBean.getConnStr());

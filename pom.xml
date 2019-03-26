@@ -61,12 +61,24 @@
         <groupId>org.springframework</groupId>
         <artifactId>spring-context</artifactId>
         <version>5.1.5.RELEASE</version>
+        <exclusions>
+        <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+        </exclusion>
+    </exclusions>
     </dependency>
     <!-- https://mvnrepository.com/artifact/org.springframework/spring-context-support -->
     <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-context-support</artifactId>
         <version>5.1.5.RELEASE</version>
+         <exclusions>
+        <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+        </exclusion>
+    </exclusions>
     </dependency>
 
     <!-- https://mvnrepository.com/artifact/org.aspectj/aspectjtools -->
@@ -94,11 +106,23 @@
         <groupId>org.springframework</groupId>
         <artifactId>spring-jdbc</artifactId>
         <version>5.1.5.RELEASE</version>
+        <exclusions>
+        <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+        </exclusion>
+    </exclusions>
     </dependency>
 
     <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-test</artifactId>
+        <version>5.1.5.RELEASE</version>
+    </dependency>
+
+     <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-beans</artifactId>
         <version>5.1.5.RELEASE</version>
     </dependency>
 
@@ -155,6 +179,12 @@
     <groupId>org.codehaus.castor</groupId>
     <artifactId>castor-core</artifactId>
     <version>1.4.1</version>
+    <exclusions>
+        <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+        </exclusion>
+      </exclusions>
 </dependency>
 
 <!-- https://mvnrepository.com/artifact/xerces/xercesImpl -->
@@ -169,6 +199,17 @@
     <groupId>org.codehaus.castor</groupId>
     <artifactId>castor-xml</artifactId>
     <version>1.4.1</version>
+
+    <exclusions>
+        <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+        </exclusion>
+        <exclusion>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+            </exclusion>
+      </exclusions>
 </dependency>
 
   <!-- https://mvnrepository.com/artifact/org.hsqldb/hsqldb -->
@@ -184,6 +225,12 @@
     <groupId>ch.qos.logback</groupId>
     <artifactId>logback-classic</artifactId>
     <version>1.2.3</version>
+    <exclusions>
+            <exclusion>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+            </exclusion>
+        </exclusions>
 </dependency>
 
 <!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-core -->

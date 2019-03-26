@@ -62,8 +62,7 @@ public class SqlServiceContext {
 
         service.setUnmarshaller(unmarshaller());
         service.setSqlRegistry(sqlRegistry());
-        service.setSqlmap(this.sqlMapConfig.getSqlMapResource());
-
+        
         return service;
     }
 }

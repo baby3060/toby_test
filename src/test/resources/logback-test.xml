@@ -5,8 +5,7 @@
             <Pattern>%d{HH:mm} %-5level %logger{36} - %msg%n</Pattern>
         </layout>
     </appender>
-
-    <root level="DEBUG">
+    <root level="INFO">
         <appender-ref ref="STDOUT" />
     </root>
 </configuration>
