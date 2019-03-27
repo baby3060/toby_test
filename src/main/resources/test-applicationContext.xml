@@ -23,5 +23,5 @@
     <bean id="connBean" class="com.tobexam.common.ConnectionBean"
         factory-bean="xmlParsing" factory-method="setConfig" />
 
-    <bean id="LogginInjector" class="com.tobexam.common.LoggerPostProcessor" />
+    <bean id="logProcessor" class="com.tobexam.common.LoggerPostProcessor" />
 </beans>

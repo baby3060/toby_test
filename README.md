@@ -410,6 +410,14 @@ java -cp [zip 파일 압축 해제]\* com.sun.tools.xjc.XJCFacade -p [압축 풀
 3. Logging Framework 적용해보기(Logback).
 4. Commons DBCP, C3P0을 이용한 DataSource 가져오기.
 
+>>> 현재 사용한 SimpleDataSource 및 스프링에서 제공하는 DataSource는 풀링을 지원 안 하므로, Commons-DBCP와 C3P0을 이용하여 풀링을 지원하는 DataSource로 수정
+
+### BeanFactoryPostProcessor
+> 스프링 메타 정보(XML, JavaSource, Annotation 등을 해석하여 생성한 BeanDifinion)를 반들고 난 뒤 호출되는 후처리기.
+
+### BeanPostProcessor
+> 인스턴스화 로직, 의존성 처리 로직을 개발자가 원하는대로 구현할 수 있는 후처리기.
+
 ## LogBack
 > slf4j로 로그 남길 시 사용하면 좋은 파트너?
 >> slf4j의 Logger와 LoggerFactory를 사용하고, 로깅(Appender)을 남기는 방법이라던가, 형식(Layout)같은 것은 Logback을 통해서 만들면 된다.
