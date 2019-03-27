@@ -408,8 +408,12 @@ java -cp [zip 파일 압축 해제]\* com.sun.tools.xjc.XJCFacade -p [압축 풀
 1. 2판 시작(읽으면서)
 2. 마이바티스와 JPA 적용해보기.
 3. Logging Framework 적용해보기(Logback).
+4. Commons DBCP, C3P0을 이용한 DataSource 가져오기.
 
 ## LogBack
 > slf4j로 로그 남길 시 사용하면 좋은 파트너?
 >> slf4j의 Logger와 LoggerFactory를 사용하고, 로깅(Appender)을 남기는 방법이라던가, 형식(Layout)같은 것은 Logback을 통해서 만들면 된다.
 >>> 설정 파일은 logback.groovy, logback-test.xml, logback.xml 순으로 우선순위를 가진다.
+
+## ReflectionUtils
+> Java Reflect Api에 쉽게 접근할 수 있게 해주는 스프링의 유틸리티.
