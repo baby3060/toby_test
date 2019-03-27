@@ -11,6 +11,8 @@ import com.mysql.cj.jdbc.Driver;
 
 import javax.sql.DataSource;
 
+import org.apache.commons.dbcp2.BasicDataSource;
+
 import org.springframework.core.io.Resource;
 
 import org.springframework.context.annotation.Bean;
@@ -20,7 +22,6 @@ import org.springframework.context.annotation.ImportResource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
 // 트랜잭션 매니저 추상화 인터페이스
@@ -53,7 +54,7 @@ public class AppContext implements SqlMapConfig {
 
     @Log Logger myLogger;
 
-    @Value("${db.driverClass}") Class<? extends com.mysql.cj.jdbc.Driver> driverClass;
+    @Value("${db.driverClass}") String driverClassName;
     @Value("${db.url}") String url;
     @Value("${db.username}") String username;
     @Value("${db.password}") String password;
@@ -107,12 +108,13 @@ public class AppContext implements SqlMapConfig {
         return xmlConfig;
     }
 
-    @Bean
+    @Bean(destroyMethod="close")
     public DataSource dataSource() {
-        SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
+        BasicDataSource dataSource = new BasicDataSource();
         myLogger.info("dataSource Logging");
+
         /*
-        dataSource.setDriverClass(Driver.class);
+        dataSource.setDriverClassName(connBean.getClassName());
         dataSource.setUrl(connBean.getConnStr());
         dataSource.setUsername(connBean.getUserName());
         dataSource.setPassword(connBean.getUserPass());
@@ -120,22 +122,19 @@ public class AppContext implements SqlMapConfig {
 
         /*
 
-        try {
-            dataSource.setDriverClass((Class<? extends com.mysql.cj.jdbc.Driver>)Class.forName(env.getProperty("db.driverClass")));
-        } catch(ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-
+        dataSource.setDriverClassName(env.getProperty("db.driverClass"));
         dataSource.setUrl(env.getProperty("db.url"));
         dataSource.setUsername(env.getProperty("db.username"));
         dataSource.setPassword(env.getProperty("db.password"));
 
         */
 
-        dataSource.setDriverClass(this.driverClass);
+        dataSource.setDriverClassName(this.driverClassName);
         dataSource.setUrl(this.url);
         dataSource.setUsername(this.username);
         dataSource.setPassword(this.password);
+
+        dataSource.setAutoCommit(false);
 
         return dataSource;
     }
