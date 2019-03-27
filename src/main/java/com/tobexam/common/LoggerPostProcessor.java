@@ -16,26 +16,30 @@ import org.springframework.util.ReflectionUtils.FieldCallback;
  */
 public class LoggerPostProcessor implements BeanPostProcessor {
  
-    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-        return bean;
+    public Object postProcessAfterInitialization(Object target, String beanName) throws BeansException {
+        return target;
     }
     
-    // 
-    public Object postProcessBeforeInitialization(final Object bean, String beanName) throws BeansException {
-        ReflectionUtils.doWithFields(bean.getClass(), new FieldCallback() {
+    // ReflectionUtils.doWithFields : 해당 타겟 클래스의 모든 필드에 대해 콜백 메소드 실행
+    public Object postProcessBeforeInitialization(final Object target, String beanName) throws BeansException {
+        ReflectionUtils.doWithFields(target.getClass(), new FieldCallback() {
                 @SuppressWarnings("unchecked")
                 public void doWith(Field field) throws IllegalArgumentException, IllegalAccessException {
+                    // 주어진 필드에 접근 가능하게 만듦
                     ReflectionUtils.makeAccessible(field);
  
                     // Field의 애노테이션이 Log라면?
                     if (field.getAnnotation(Log.class) != null) {
+                        // Log 애노테이션
                         Log logAnnotation = field.getAnnotation(Log.class);
-                        Logger logger = LoggerFactory.getLogger(bean.getClass());
-                        field.set(bean, logger);
+                        // Logger 생성(대상 클래스의)
+                        Logger logger = LoggerFactory.getLogger(target.getClass());
+                        // 대상 필드롤 Logger로 설정
+                        field.set(target, logger);
                     }
                 }
         });
  
-        return bean;
+        return target;
     }
 }
