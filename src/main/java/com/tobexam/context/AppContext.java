@@ -134,7 +134,7 @@ public class AppContext implements SqlMapConfig {
         dataSource.setUsername(this.username);
         dataSource.setPassword(this.password);
 
-        dataSource.setAutoCommit(false);
+        dataSource.setAutoCommitOnReturn(false);
 
         return dataSource;
     }

@@ -24,4 +24,13 @@
         factory-bean="xmlParsing" factory-method="setConfig" />
 
     <bean id="logProcessor" class="com.tobexam.common.LoggerPostProcessor" />
+
+    <!-- pointcut-ref가 아닐 경우 표현식을 의미 -->
+    <!-- [접근제한자] 타입(*) 패키지 및 클래스  -->
+    <aop:config>
+        <aop:advisor advice-ref="logAdvice" pointcut="execution(* com.tobexam.service.*Impl.*(..))" />
+    </aop:config>
+
+    <bean id="logAdvice" class="com.tobexam.service.LoggingAdvice" />
+
 </beans>
