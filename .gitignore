@@ -4,3 +4,4 @@
 .project
 /.settings/
 *.properties
+/logs/

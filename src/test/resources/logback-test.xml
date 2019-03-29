@@ -13,6 +13,22 @@
         </encoder>
     </appender>
 
+    <appender name="ROLL_LOGGING" class="ch.qos.logback.core.rolling.RollingFileAppender">
+ 		<file>logs/service_logging.log</file>
+    	<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">    	
+      		<!-- daily rollover -->
+      		<fileNamePattern>logs/service_logging.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+      		<maxHistory>30</maxHistory>
+              <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>100mb</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+    	</rollingPolicy>
+
+    	<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>%d{HH:mm} %-5level %logger{36} - %msg%n</Pattern>
+        </encoder>
+  	</appender>
+
     <logger name="org.springframework.test.context.support.DefaultTestContextBootstrapper" level="OFF"/>
 
     <logger name="org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseFactory" level="OFF"/>
@@ -23,4 +39,8 @@
     <root level="INFO">
         <appender-ref ref="STDOUT" />
     </root>
+
+    <logger name="com.tobexam.service" level="DEBUG">
+        <appender-ref ref="ROLL_LOGGING" />
+    </logger>
 </configuration>
